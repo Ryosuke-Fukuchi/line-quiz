@@ -1,4 +1,4 @@
-import { QuestionContent } from "./QuestionContent";
+import { QuestionContent } from "@/features/question/[id]/QuestionContent";
 
 export function generateStaticParams() {
   const questions = [{ id: "1" }, { id: "2" }, { id: "3" }];

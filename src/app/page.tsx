@@ -1,5 +1,5 @@
+import { JoinButton } from "@/features/home/JoinButton";
 import { getQuiz } from "@/requests/quiz";
-import { JoinButton } from "./JoinButton";
 
 export default async function Home() {
   const quiz = await getQuiz();

@@ -1,5 +1,5 @@
 import { getPlayer } from "@/requests/player";
-import { QuestionContent } from "./ButtonArea";
+import { QuestionContent } from "@/features/question/ButtonArea";
 import { notFound } from "next/navigation";
 
 export default async function QuestionPage() {
