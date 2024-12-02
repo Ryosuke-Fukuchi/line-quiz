@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { getQuiz } from "@/requests/quiz";
+import { JoinButton } from "./JoinButton";
 
 export default async function Home() {
   const quiz = await getQuiz();
@@ -14,16 +14,8 @@ export default async function Home() {
         </p>
       </div>
       <div className="grow flex justify-center items-center">
-        <Link href="/question">
-          <button
-            className="border-2 border-emerald-700 text-white rounded-md bg-emerald-700 hover:border-emerald-700 hover:bg-white 
-        hover:text-emerald-700 font-semibold text-xl tracking-wide shadow-md shadow-emerald-900/40 active:shadow-none py-2 px-6"
-          >
-            クイズに参加する!
-          </button>
-        </Link>
+        <JoinButton quiz={quiz} />
       </div>
-      <Link href="/player_result">result</Link>
     </main>
   );
 }

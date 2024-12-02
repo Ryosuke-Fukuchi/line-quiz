@@ -61,9 +61,9 @@ export async function PATCH(
 
     return NextResponse.json({ message: "success" }, { status: 200 });
   } catch (error) {
-    console.error("POST request error:", error);
+    console.error("PATCH request error:", error);
     return NextResponse.json(
-      { error: "An unexpected error occurred while processing POST request." },
+      { error: "An unexpected error occurred while processing PATCH request." },
       { status: 500 }
     );
   }

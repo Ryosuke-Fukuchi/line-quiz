@@ -27,3 +27,16 @@ export async function patchPlayer(
     body: JSON.stringify(player),
   });
 }
+
+export async function createPlayer(
+  player: Omit<
+    PlayerType,
+    "id" | "status" | "next_question_id" | "earned_points" | "question_number"
+  >
+) {
+  await fetch("http://localhost:3000/api/player/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(player),
+  });
+}
