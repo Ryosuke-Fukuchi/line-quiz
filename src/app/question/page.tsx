@@ -1,5 +1,5 @@
 import { getPlayer } from "@/requests/player";
-import { QuestionContent } from "@/features/question/ButtonArea";
+import { ButtonArea } from "@/features/question/ButtonArea";
 import { notFound } from "next/navigation";
 import { getLineUser } from "@/requests/liff";
 
@@ -10,6 +10,12 @@ export default async function QuestionPage() {
   if (!player) {
     notFound();
   }
+
+  const answer = JSON.parse(
+    player.playeranswer_set.find(
+      (answer) => answer.question_number === player.question_number - 1
+    )?.content ?? "[]"
+  ) as string[];
 
   return (
     <main className="min-h-screen p-8 pb-20 flex flex-col items-center">
@@ -34,7 +40,7 @@ export default async function QuestionPage() {
               <span className="text-sm ml-1">は</span>
             </p>
             <h3 className="text-2xl font-semibold text-neutral-700 text-center mt-2">
-              {["A", "B", "C"].map((value, i) => (
+              {answer.map((value, i) => (
                 <span key={i.toString()} className="mx-2">
                   {value}
                 </span>
@@ -47,7 +53,7 @@ export default async function QuestionPage() {
         )}
       </div>
       <div className="grow flex items-end py-6">
-        <QuestionContent player={player} />
+        <ButtonArea player={player} />
       </div>
     </main>
   );

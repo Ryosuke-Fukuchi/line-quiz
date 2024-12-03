@@ -9,7 +9,7 @@ type PropsType = {
   player: PlayerType;
 };
 
-export const QuestionContent: React.FC<PropsType> = ({ player }) => {
+export const ButtonArea: React.FC<PropsType> = ({ player }) => {
   const router = useRouter();
 
   const [loading, setLoading] = React.useState(false);

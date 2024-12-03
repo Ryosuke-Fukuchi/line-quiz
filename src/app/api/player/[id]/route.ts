@@ -9,7 +9,12 @@ export async function GET(
 
   const { data, error } = await supabase
     .from("Player")
-    .select("*")
+    .select(
+      `
+      *,
+      playeranswer_set:PlayerAnswer(*)
+    `
+    )
     .eq("user_id", userId);
 
   if (error || !data) {
