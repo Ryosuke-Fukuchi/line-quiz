@@ -1,9 +1,11 @@
 import { getPlayer } from "@/requests/player";
 import { QuestionContent } from "@/features/question/ButtonArea";
 import { notFound } from "next/navigation";
+import { getLineUser } from "@/requests/liff";
 
 export default async function QuestionPage() {
-  const player = await getPlayer("xxx");
+  const lineUser = await getLineUser();
+  const player = await getPlayer(lineUser?.userId || "");
 
   if (!player) {
     notFound();

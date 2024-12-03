@@ -52,7 +52,7 @@ export async function PATCH(
     const body = await request.json(); // リクエストのJSONボディを取得
     if (!body) {
       return NextResponse.json(
-        { error: "Name is required." },
+        { error: "Body is required." },
         { status: 400 } // Bad Request
       );
     }
