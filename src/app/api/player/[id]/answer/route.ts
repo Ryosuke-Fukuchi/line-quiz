@@ -1,7 +1,12 @@
 import { supabase } from "@/utils/supabase";
 import { NextResponse } from "next/server";
 
-export async function POST(request: Request) {
+export async function POST(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id: playerId } = await params;
+
   try {
     const body = await request.json(); // リクエストのJSONボディを取得
     if (!body) {
@@ -11,7 +16,9 @@ export async function POST(request: Request) {
       );
     }
 
-    await supabase.from("Player").insert(body);
+    await supabase
+      .from("PlayerAnswer")
+      .insert({ ...body, player_id: playerId });
 
     return NextResponse.json({ message: "success" }, { status: 200 });
   } catch (error) {

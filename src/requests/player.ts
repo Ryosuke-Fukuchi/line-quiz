@@ -9,6 +9,16 @@ export type PlayerType = {
   next_question_id: number;
 };
 
+export type PlayerAnswerType = {
+  id: number;
+  content: string;
+  earned_points: number;
+  question_type: string;
+  question_number: number;
+  player_id: number;
+  question_id: number;
+};
+
 export async function getPlayer(userId: string): Promise<PlayerType | null> {
   const res = await fetch("http://localhost:3000/api/player/" + userId);
   if (res.status === 404) {
@@ -38,5 +48,16 @@ export async function createPlayer(
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(player),
+  });
+}
+
+export async function createPlayerAnswer(
+  playerId: number,
+  answer: Omit<PlayerAnswerType, "id" | "player_id">
+) {
+  await fetch(`http://localhost:3000/api/player/${playerId}/answer`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(answer),
   });
 }

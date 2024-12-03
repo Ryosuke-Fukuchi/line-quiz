@@ -1,10 +1,15 @@
 import { QuestionContent } from "@/features/question/[id]/QuestionContent";
+import { getLineUser } from "@/requests/liff";
+import { getPlayer } from "@/requests/player";
+import { getQuestion } from "@/requests/question";
+import { getQuiz } from "@/requests/quiz";
+import { notFound } from "next/navigation";
 
-export function generateStaticParams() {
-  const questions = [{ id: "1" }, { id: "2" }, { id: "3" }];
+export async function generateStaticParams() {
+  const quiz = await getQuiz();
 
-  return questions.map((question: { id: string }) => ({
-    id: question.id,
+  return quiz.question_set.map((question) => ({
+    id: question.id.toString(),
   }));
 }
 
@@ -13,16 +18,17 @@ export default async function QuestionContentPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { id } = await params;
+  const { id: questionId } = await params;
+  const question = await getQuestion(questionId);
+  const lineUser = await getLineUser();
+  const player = await getPlayer(lineUser?.userId || "");
+  const quiz = await getQuiz();
 
-  const choices = [
-    { pk: 1, value: "A", is_answer: false, sort_order: 1 },
-    { pk: 2, value: "B", is_answer: true, sort_order: 2 },
-    { pk: 3, value: "C", is_answer: false, sort_order: 3 },
-    { pk: 4, value: "D", is_answer: false, sort_order: 4 },
-    { pk: 5, value: "E", is_answer: false, sort_order: 5 },
-  ].sort((a, b) => a.sort_order - b.sort_order);
+  if (!question || !player) {
+    notFound();
+  }
+
+  const isLastQuestion = question?.question_number === quiz.question_set.length;
 
   return (
     <main className="min-h-screen px-8 py-4 pb-20 flex flex-col">
@@ -32,13 +38,9 @@ export default async function QuestionContentPage({
         </h3>
       </div>
       <QuestionContent
-        choices={choices}
-        questionMeta={{
-          selectCounts: 3,
-          answerPoints: 10,
-          additionalPoints: 5,
-          questionNumber: 1,
-        }}
+        question={question}
+        player={player}
+        isLastQuestion={isLastQuestion}
       />
     </main>
   );

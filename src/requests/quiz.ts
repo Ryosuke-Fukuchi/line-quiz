@@ -2,6 +2,7 @@ export type QuizType = {
   id: number;
   title: string;
   description: string;
+  question_set: { id: number }[];
 };
 
 export async function getQuiz(): Promise<QuizType> {

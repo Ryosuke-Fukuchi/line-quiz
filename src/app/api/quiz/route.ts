@@ -2,7 +2,18 @@ import { NextResponse } from "next/server";
 import { supabase } from "@/utils/supabase";
 
 export async function GET() {
-  const { data, error } = await supabase.from("Quiz").select("*").eq("id", 1);
+  const { data, error } = await supabase
+    .from("Quiz")
+    .select(
+      `
+      title,
+      description,
+      question_set:Question (
+        id
+      )
+    `
+    )
+    .eq("id", "1");
 
   if (error || !data) {
     console.error("Error occurred:", error);
