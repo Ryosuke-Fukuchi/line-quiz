@@ -42,7 +42,12 @@ export async function patchPlayer(
 export async function createPlayer(
   player: Omit<
     PlayerType,
-    "id" | "status" | "next_question_id" | "earned_points" | "question_number"
+    | "id"
+    | "status"
+    | "next_question_id"
+    | "earned_points"
+    | "question_number"
+    | "playeranswer_set"
   >
 ) {
   await fetch("http://localhost:3000/api/player/", {

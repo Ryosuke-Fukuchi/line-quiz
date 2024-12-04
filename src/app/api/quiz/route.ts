@@ -6,6 +6,7 @@ export async function GET() {
     .from("Quiz")
     .select(
       `
+      id,
       title,
       description,
       question_set:Question (

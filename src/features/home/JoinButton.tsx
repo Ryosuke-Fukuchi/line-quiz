@@ -15,7 +15,7 @@ export const JoinButton: React.FC<PropsType> = ({ quiz }) => {
 
   const handleJoin = async () => {
     setLoading(true);
-    await createPlayer({ name: "Ryosukex", user_id: "xxxx", quiz_id: quiz.id });
+    await createPlayer({ name: "Ryosukex", user_id: "xxx", quiz_id: quiz.id });
     router.push("/question");
     setLoading(false);
   };
