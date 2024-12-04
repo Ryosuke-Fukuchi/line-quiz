@@ -8,7 +8,6 @@ export default async function ResultPage({
 }) {
   const { id: userId } = await params;
   const player = await getPlayer(userId);
-  console.log(player);
 
   if (!player) {
     notFound();

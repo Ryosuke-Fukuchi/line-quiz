@@ -37,7 +37,7 @@ export async function GET(
     .eq("question_number", player.question_number)
     .eq("quiz_id", 1);
 
-  if (questionError || !questionData || questionData.length === 0) {
+  if (questionError || !questionData) {
     console.error("Error occurred:", error);
     return NextResponse.json(
       { message: "Error fetching data" },
@@ -45,7 +45,10 @@ export async function GET(
     );
   }
 
-  return NextResponse.json({ ...player, next_question_id: questionData[0].id });
+  return NextResponse.json(
+    { ...player, next_question_id: questionData[0]?.id ?? -1 },
+    { status: 200 }
+  );
 }
 
 export async function PATCH(

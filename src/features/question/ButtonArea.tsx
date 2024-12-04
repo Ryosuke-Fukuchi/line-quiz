@@ -17,7 +17,7 @@ export const ButtonArea: React.FC<PropsType> = ({ player }) => {
   const toResultPage = async () => {
     setLoading(true);
     await patchPlayer(player.id, { status: PLAYER_STATUS.result_confirmed });
-    router.push(`/player_result/${player.id}`);
+    router.push(`/player_result/${player.user_id}`);
     setLoading(false);
   };
 
