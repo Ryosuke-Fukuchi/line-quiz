@@ -88,27 +88,54 @@ export const QuestionSelectContent: React.FC<PropsType> = ({
   };
 
   return (
-    <div className="p-4 grow flex flex-col justify-between">
-      <div className="p-4 flex flex-col gap-3">
-        {choices.map((choice) => (
-          <button
-            key={choice.pk.toString()}
-            type="button"
-            className={twMerge(
-              "w-full box-border border h-12 border-teal-600 bg-green-50 rounded-full p-2",
-              clsx(
-                selected.find((item) => choice.pk === item.pk) &&
-                  "border-3 bg-green-100 font-semibold"
-              )
-            )}
-            onClick={() => {
-              selectChoice(choice);
-            }}
-          >
-            {choice.value}
-          </button>
-        ))}
-      </div>
+    <div
+      className={`p-4 grow flex flex-col justify-between ${
+        choices.length > 5 ? "items-center" : ""
+      }`}
+    >
+      {choices.length > 5 ? (
+        <div className="py-4 grid grid-cols-3 gap-3 w-fit">
+          {choices.map((choice) => (
+            <button
+              key={choice.pk.toString()}
+              type="button"
+              className={twMerge(
+                "text-lg size-20 box-border border border-teal-600 bg-green-50 rounded-md p-2",
+                clsx(
+                  selected.find((item) => choice.pk === item.pk) &&
+                    "border-3 bg-green-100 font-semibold"
+                )
+              )}
+              onClick={() => {
+                selectChoice(choice);
+              }}
+            >
+              {choice.value}
+            </button>
+          ))}
+        </div>
+      ) : (
+        <div className="p-4 flex flex-col gap-3">
+          {choices.map((choice) => (
+            <button
+              key={choice.pk.toString()}
+              type="button"
+              className={twMerge(
+                "w-full text-lg box-border border h-12 border-teal-600 bg-green-50 rounded-full p-2",
+                clsx(
+                  selected.find((item) => choice.pk === item.pk) &&
+                    "border-3 bg-green-100 font-semibold"
+                )
+              )}
+              onClick={() => {
+                selectChoice(choice);
+              }}
+            >
+              {choice.value}
+            </button>
+          ))}
+        </div>
+      )}
       <div className="flex justify-center py-6">
         <button
           className={twMerge(
