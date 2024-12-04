@@ -4,6 +4,6 @@ type LineUserType = {
 };
 
 export async function getLineUser(): Promise<LineUserType | null> {
-  const res = await fetch("http://localhost:3000/api/liff/user");
+  const res = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/liff/user`);
   return res.json();
 }

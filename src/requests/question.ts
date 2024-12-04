@@ -35,7 +35,9 @@ export type QuestionType = {
 export async function getQuestion(
   questionId: string
 ): Promise<QuestionType | null> {
-  const res = await fetch("http://localhost:3000/api/question/" + questionId);
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_HOST}/api/question/${questionId}`
+  );
   if (res.status === 404) {
     return null;
   }

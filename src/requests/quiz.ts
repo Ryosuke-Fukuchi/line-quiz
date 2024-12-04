@@ -6,6 +6,6 @@ export type QuizType = {
 };
 
 export async function getQuiz(): Promise<QuizType> {
-  const res = await fetch("http://localhost:3000/api/quiz");
+  const res = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/quiz`);
   return res.json();
 }

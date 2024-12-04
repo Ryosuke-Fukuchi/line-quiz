@@ -21,7 +21,9 @@ export type PlayerType = {
 };
 
 export async function getPlayer(userId: string): Promise<PlayerType | null> {
-  const res = await fetch("http://localhost:3000/api/player/" + userId);
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_HOST}/api/player/` + userId
+  );
   if (res.status === 404) {
     return null;
   }
@@ -32,7 +34,7 @@ export async function patchPlayer(
   playerId: number,
   player: Partial<Omit<PlayerType, "next_question_id">>
 ) {
-  await fetch("http://localhost:3000/api/player/" + playerId, {
+  await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/player/${playerId}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(player),
@@ -50,7 +52,7 @@ export async function createPlayer(
     | "playeranswer_set"
   >
 ) {
-  await fetch("http://localhost:3000/api/player/", {
+  await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/player/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(player),
@@ -61,7 +63,7 @@ export async function createPlayerAnswer(
   playerId: number,
   answer: Omit<PlayerAnswerType, "id" | "player_id">
 ) {
-  await fetch(`http://localhost:3000/api/player/${playerId}/answer`, {
+  await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/player/${playerId}/answer`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(answer),
