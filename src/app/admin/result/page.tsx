@@ -1,10 +1,10 @@
 import { getPlayers } from "@/requests/player";
-import { getQuiz } from "@/requests/quiz";
+import { getQuizForAdmin } from "@/requests/quiz";
 import clsx from "clsx";
 import { LuCrown } from "react-icons/lu";
 
 export default async function AdminResultPage() {
-  const quiz = await getQuiz();
+  const quiz = await getQuizForAdmin();
   const players = await getPlayers(quiz.id);
 
   const sortedPlayers = players.sort(

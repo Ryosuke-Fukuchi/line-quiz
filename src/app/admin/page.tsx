@@ -1,8 +1,8 @@
 import { getPlayers } from "@/requests/player";
-import { getQuiz } from "@/requests/quiz";
+import { getQuizForAdmin } from "@/requests/quiz";
 
 export default async function AdminPage() {
-  const quiz = await getQuiz();
+  const quiz = await getQuizForAdmin();
   const players = await getPlayers(quiz.id);
   return (
     <main className="min-h-screen p-8 pb-20">

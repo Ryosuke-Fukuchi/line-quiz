@@ -1,12 +1,30 @@
 import { QuestionContent } from "@/features/question/[id]/QuestionContent";
 import { getQuestion } from "@/requests/question";
 import { getQuiz } from "@/requests/quiz";
+import { supabase } from "@/utils/supabase";
 import { notFound } from "next/navigation";
 
 export async function generateStaticParams() {
-  const quiz = await getQuiz();
+  const { data, error } = await supabase
+    .from("Quiz")
+    .select(
+      `
+    id,
+    title,
+    description,
+    question_set:Question (
+      id
+    )
+  `
+    )
+    .eq("id", process.env.QUIZ_ID);
+  // const quiz = await getQuiz();
 
-  return quiz.question_set.map((question) => ({
+  if (!data || error) {
+    notFound();
+  }
+
+  return data[0].question_set.map((question) => ({
     id: question.id.toString(),
   }));
 }
