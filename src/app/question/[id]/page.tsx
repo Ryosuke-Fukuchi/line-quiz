@@ -1,6 +1,4 @@
 import { QuestionContent } from "@/features/question/[id]/QuestionContent";
-import { getLineUser } from "@/requests/liff";
-import { getPlayer } from "@/requests/player";
 import { getQuestion } from "@/requests/question";
 import { getQuiz } from "@/requests/quiz";
 import { notFound } from "next/navigation";
@@ -20,11 +18,9 @@ export default async function QuestionContentPage({
 }) {
   const { id: questionId } = await params;
   const question = await getQuestion(questionId);
-  const lineUser = await getLineUser();
-  const player = await getPlayer(lineUser?.userId || "");
   const quiz = await getQuiz();
 
-  if (!question || !player) {
+  if (!question) {
     notFound();
   }
 
@@ -37,11 +33,7 @@ export default async function QuestionContentPage({
           第{question.question_number}問!
         </h3>
       </div>
-      <QuestionContent
-        question={question}
-        player={player}
-        isLastQuestion={isLastQuestion}
-      />
+      <QuestionContent question={question} isLastQuestion={isLastQuestion} />
     </main>
   );
 }

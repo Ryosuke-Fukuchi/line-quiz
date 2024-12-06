@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useRouter } from "next/navigation";
-import { createPlayer } from "@/requests/player";
+import { createPlayer, patchPlayer } from "@/requests/player";
 import { QuizType } from "@/requests/quiz";
 import { PLAYER_STATUS } from "@/const.ts/player";
 import { getQuestionByNumber } from "@/requests/question";
@@ -44,7 +44,15 @@ export const ButtonArea: React.FC<PropsType> = ({ quiz }) => {
         router.push(`/question/${question?.id}`);
         break;
       case "confirm":
-        router.push("/player_result");
+        {
+          if (player) {
+            await patchPlayer(player?.id, {
+              status: PLAYER_STATUS.result_confirmed,
+            });
+            await refetchPlayer?.();
+            router.push(`/player_result/${player?.user_id}`);
+          }
+        }
         break;
       default:
         break;

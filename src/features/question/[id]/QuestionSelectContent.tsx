@@ -15,7 +15,9 @@ type PropsType = {
   questionNumber: number;
   question: QuestionSelectType;
   player: PlayerType;
+  refetchPlayer?: () => Promise<void>;
   isLastQuestion: boolean;
+  isDone: boolean;
 };
 
 export const QuestionSelectContent: React.FC<PropsType> = ({
@@ -23,8 +25,12 @@ export const QuestionSelectContent: React.FC<PropsType> = ({
   questionNumber,
   question,
   player,
+  refetchPlayer,
   isLastQuestion,
+  isDone,
 }) => {
+  const buttonText = isDone ? "回答済み" : "回答する";
+
   const choices = React.useMemo(
     () =>
       question.questionselectchoice_set
@@ -81,6 +87,7 @@ export const QuestionSelectContent: React.FC<PropsType> = ({
 
     await createPlayerAnswer(player.id, answerPayload);
     await patchPlayer(player.id, playerPayload);
+    await refetchPlayer?.();
 
     // /questionに遷移
     router.push("/question");
@@ -145,10 +152,12 @@ export const QuestionSelectContent: React.FC<PropsType> = ({
                 "font-semibold border-emerald-700 text-white bg-emerald-700 hover:border-emerald-700 hover:bg-white hover:text-emerald-700 shadow-md shadow-emerald-900/40 active:shadow-none"
             )
           )}
-          disabled={selected.length !== question.select_counts || loading}
+          disabled={
+            selected.length !== question.select_counts || loading || isDone
+          }
           onClick={handleAnswer}
         >
-          {loading ? "loading..." : "回答する"}
+          {loading ? "loading..." : buttonText}
         </button>
       </div>
     </div>

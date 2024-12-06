@@ -15,7 +15,9 @@ type PropsType = {
   questionNumber: number;
   question: QuestionSortType;
   player: PlayerType;
+  refetchPlayer?: () => Promise<void>;
   isLastQuestion: boolean;
+  isDone: boolean;
 };
 
 export const QuestionSortContent: React.FC<PropsType> = ({
@@ -23,8 +25,12 @@ export const QuestionSortContent: React.FC<PropsType> = ({
   questionNumber,
   question,
   player,
+  refetchPlayer,
   isLastQuestion,
+  isDone,
 }) => {
+  const buttonText = isDone ? "回答済み" : "回答する";
+
   const choices = React.useMemo(
     () =>
       question.questionsortchoice_set
@@ -83,6 +89,7 @@ export const QuestionSortContent: React.FC<PropsType> = ({
 
     await createPlayerAnswer(player.id, answerPayload);
     await patchPlayer(player.id, playerPayload);
+    await refetchPlayer?.();
 
     // /questionに遷移
     router.push("/question");
@@ -126,10 +133,10 @@ export const QuestionSortContent: React.FC<PropsType> = ({
                 "font-semibold border-emerald-700 text-white bg-emerald-700 hover:border-emerald-700 hover:bg-white hover:text-emerald-700 shadow-md shadow-emerald-900/40 active:shadow-none"
             )
           )}
-          disabled={selected.length !== choices.length || loading}
+          disabled={selected.length !== choices.length || loading || isDone}
           onClick={handleAnswer}
         >
-          {loading ? "loading..." : "回答する"}
+          {loading ? "loading..." : buttonText}
         </button>
       </div>
     </div>
