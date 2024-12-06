@@ -43,15 +43,3 @@ export async function getQuestion(
   }
   return res.json();
 }
-
-export async function getQuestionByNumber(
-  questionNumber: number
-): Promise<QuestionType | null> {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_HOST}/api/question/number/${questionNumber}`
-  );
-  if (res.status === 404) {
-    return null;
-  }
-  return res.json();
-}

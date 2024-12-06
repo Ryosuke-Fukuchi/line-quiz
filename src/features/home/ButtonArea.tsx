@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { createPlayer, patchPlayer } from "@/requests/player";
 import { QuizType } from "@/requests/quiz";
 import { PLAYER_STATUS } from "@/const.ts/player";
-import { getQuestionByNumber } from "@/requests/question";
 import { useLiff } from "@/app/liffProvider";
 import { usePlayer } from "@/app/playerProvider";
 
@@ -38,10 +37,7 @@ export const ButtonArea: React.FC<PropsType> = ({ quiz }) => {
         router.push("/question");
         break;
       case "restart":
-        const question = await getQuestionByNumber(
-          player?.question_number as number
-        );
-        router.push(`/question/${question?.id}`);
+        router.push(`/question/${player?.next_question_id}`);
         break;
       case "confirm":
         {
