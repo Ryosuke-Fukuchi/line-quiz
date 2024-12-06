@@ -8,10 +8,10 @@ import {
 import { QuestionSelectContent } from "./QuestionSelectContent";
 import { QuestionSortContent } from "./QuestionSortContent";
 import { QUESTION_TYPE } from "@/const.ts/question";
-import { usePlayerContext } from "@/app/playerProvider";
 import { notFound, useRouter } from "next/navigation";
 import { PLAYER_STATUS } from "@/const.ts/player";
 import { patchPlayer } from "@/requests/player";
+import { usePlayerContext } from "@/components/provider/playerProvider";
 
 type PropsType = {
   question: QuestionType;
