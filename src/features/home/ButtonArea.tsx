@@ -65,7 +65,7 @@ export const ButtonArea: React.FC<PropsType> = ({ quiz }) => {
         onClick={handleJoin}
         disabled={loading || !profile}
       >
-        {!loading ? <SpinLoading text="Loading" /> : buttonType.text}
+        {loading || !profile ? <SpinLoading text="Loading" /> : buttonType.text}
       </button>
     </>
   );
