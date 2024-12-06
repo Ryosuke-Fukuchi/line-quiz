@@ -25,15 +25,7 @@ export const ButtonArea: React.FC<PropsType> = ({ player, refetchPlayer }) => {
 
   return (
     <>
-      {player.status === PLAYER_STATUS.done ? (
-        <button
-          className="border-2 border-emerald-700 text-white rounded bg-emerald-700 hover:border-emerald-700 hover:bg-white 
-        hover:text-emerald-700 font-semibold text-lg tracking-wide shadow-md shadow-emerald-900/40 active:shadow-none py-2 px-6"
-          onClick={toResultPage}
-        >
-          {loading ? "loading..." : "結果を見る!"}
-        </button>
-      ) : (
+      {player.status === PLAYER_STATUS.playing ? (
         <Link href={`/question/${player.next_question_id}`}>
           <button
             className="border-2 border-emerald-700 text-white rounded bg-emerald-700 hover:border-emerald-700 hover:bg-white 
@@ -42,6 +34,14 @@ export const ButtonArea: React.FC<PropsType> = ({ player, refetchPlayer }) => {
             第{player.question_number}問に進む
           </button>
         </Link>
+      ) : (
+        <button
+          className="border-2 border-emerald-700 text-white rounded bg-emerald-700 hover:border-emerald-700 hover:bg-white 
+        hover:text-emerald-700 font-semibold text-lg tracking-wide shadow-md shadow-emerald-900/40 active:shadow-none py-2 px-6"
+          onClick={toResultPage}
+        >
+          {loading ? "loading..." : "結果を見る!"}
+        </button>
       )}
     </>
   );
