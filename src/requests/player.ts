@@ -22,7 +22,10 @@ export type PlayerType = {
 
 export async function getPlayer(userId: string): Promise<PlayerType | null> {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_HOST}/api/player/` + userId
+    `${process.env.NEXT_PUBLIC_HOST}/api/player/` + userId,
+    {
+      cache: "no-store",
+    }
   );
   if (res.status === 404) {
     return null;

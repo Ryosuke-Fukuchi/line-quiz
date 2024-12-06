@@ -1,11 +1,10 @@
-import { getPlayer } from "@/requests/player";
+"use client";
 import { ButtonArea } from "@/features/question/ButtonArea";
 import { notFound } from "next/navigation";
-import { getLineUser } from "@/requests/liff";
+import { usePlayer } from "../playerProvider";
 
-export default async function QuestionPage() {
-  const lineUser = await getLineUser();
-  const player = await getPlayer(lineUser?.userId || "");
+export default function QuestionPage() {
+  const { player } = usePlayer();
 
   if (!player) {
     notFound();

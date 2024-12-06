@@ -14,6 +14,7 @@ import { useLiff } from "./liffProvider";
 
 type PlayerContextType = {
   player: PlayerType | null;
+  refetch?: () => Promise<void>;
 };
 
 const PlayerContext = createContext<PlayerContextType>({
@@ -36,12 +37,16 @@ export const PlayerProvider: FC<{ children: ReactNode }> = ({ children }) => {
     }
   }, [profile]);
 
+  const refetch = useCallback(async () => {
+    searchPlayer();
+  }, [searchPlayer]);
+
   useEffect(() => {
     searchPlayer();
   }, [searchPlayer]);
 
   return (
-    <PlayerContext.Provider value={{ player }}>
+    <PlayerContext.Provider value={{ player, refetch }}>
       {children}
     </PlayerContext.Provider>
   );

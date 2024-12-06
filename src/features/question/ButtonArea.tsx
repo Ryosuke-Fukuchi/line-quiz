@@ -7,9 +7,10 @@ import { PLAYER_STATUS } from "@/const.ts/player";
 
 type PropsType = {
   player: PlayerType;
+  refetchPlayer?: () => Promise<void>;
 };
 
-export const ButtonArea: React.FC<PropsType> = ({ player }) => {
+export const ButtonArea: React.FC<PropsType> = ({ player, refetchPlayer }) => {
   const router = useRouter();
 
   const [loading, setLoading] = React.useState(false);
@@ -17,6 +18,7 @@ export const ButtonArea: React.FC<PropsType> = ({ player }) => {
   const toResultPage = async () => {
     setLoading(true);
     await patchPlayer(player.id, { status: PLAYER_STATUS.result_confirmed });
+    await refetchPlayer?.();
     router.push(`/player_result/${player.user_id}`);
     setLoading(false);
   };

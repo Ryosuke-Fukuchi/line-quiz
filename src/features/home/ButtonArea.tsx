@@ -14,7 +14,7 @@ type PropsType = {
 
 export const ButtonArea: React.FC<PropsType> = ({ quiz }) => {
   const { profile } = useLiff();
-  const { player } = usePlayer();
+  const { player, refetch: refetchPlayer } = usePlayer();
   const router = useRouter();
   const [loading, setLoading] = React.useState(false);
 
@@ -34,6 +34,7 @@ export const ButtonArea: React.FC<PropsType> = ({ quiz }) => {
           user_id: profile?.userId as string,
           quiz_id: quiz.id,
         });
+        await refetchPlayer?.();
         router.push("/question");
         break;
       case "restart":
