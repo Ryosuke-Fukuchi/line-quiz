@@ -35,7 +35,7 @@ export async function GET(
     .from("Question")
     .select("*")
     .eq("question_number", player.question_number)
-    .eq("quiz_id", 1);
+    .eq("quiz_id", process.env.QUIZ_ID);
 
   if (questionError || !questionData) {
     console.error("Error occurred:", error);

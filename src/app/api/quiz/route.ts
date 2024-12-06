@@ -14,7 +14,7 @@ export async function GET() {
       )
     `
     )
-    .eq("id", "1");
+    .eq("id", process.env.QUIZ_ID);
 
   if (error || !data) {
     console.error("Error occurred:", error);
