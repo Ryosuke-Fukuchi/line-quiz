@@ -1,17 +1,22 @@
+"use client";
+import { usePlayerContext } from "@/components/provider/playerProvider";
 import { ButtonArea } from "@/features/player_result/[id]/ButtonArea";
-import { getPlayer } from "@/requests/player";
-import { notFound } from "next/navigation";
 
-export default async function ResultPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id: userId } = await params;
-  const player = await getPlayer(userId);
+export default function ResultPage() {
+  const { player, loading: playerLoading } = usePlayerContext();
 
-  if (!player) {
-    notFound();
+  if (!player || playerLoading) {
+    return (
+      <main className="min-h-screen p-8 pb-20 flex flex-col items-center">
+        <div className="p-1">
+          <div className="flex justify-center items-center">
+            <span
+              className={`animate-spin-fast rounded-full border-t-emerald-800 border-r-emerald-800 border-b-emerald-800 border-slate-100 w-12 h-12 border-4`}
+            ></span>
+          </div>
+        </div>
+      </main>
+    );
   }
 
   return (

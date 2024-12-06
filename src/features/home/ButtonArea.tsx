@@ -14,7 +14,11 @@ type PropsType = {
 
 export const ButtonArea: React.FC<PropsType> = ({ quiz }) => {
   const { profile } = useLiffContext();
-  const { player, refetch: refetchPlayer } = usePlayerContext();
+  const {
+    player,
+    loading: playerLoading,
+    refetch: refetchPlayer,
+  } = usePlayerContext();
   const router = useRouter();
   const [loading, setLoading] = React.useState(false);
 
@@ -63,9 +67,13 @@ export const ButtonArea: React.FC<PropsType> = ({ quiz }) => {
         className="flex justify-center items-center border-2 border-emerald-700 text-white rounded-md bg-emerald-700 hover:border-emerald-700 hover:bg-white 
       hover:text-emerald-700 font-semibold text-xl tracking-wide shadow-md shadow-emerald-900/40 active:shadow-none py-2 px-6"
         onClick={handleJoin}
-        disabled={loading || !profile}
+        disabled={loading || playerLoading || !profile}
       >
-        {loading || !profile ? <SpinLoading text="Loading" /> : buttonType.text}
+        {loading || playerLoading || !profile ? (
+          <SpinLoading text="Loading" />
+        ) : (
+          buttonType.text
+        )}
       </button>
     </>
   );

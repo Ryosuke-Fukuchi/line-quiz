@@ -21,7 +21,7 @@ export async function generateStaticParams() {
   // const quiz = await getQuiz();
 
   if (!data || error) {
-    notFound();
+    throw new Error("Failed to fetch quiz data");
   }
 
   return data[0].question_set.map((question) => ({
