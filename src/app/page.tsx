@@ -1,4 +1,4 @@
-import { JoinButton } from "@/features/home/JoinButton";
+import { ButtonArea } from "@/features/home/ButtonArea";
 import { getQuiz } from "@/requests/quiz";
 
 export default async function Home() {
@@ -14,7 +14,7 @@ export default async function Home() {
         </p>
       </div>
       <div className="grow flex justify-center items-center">
-        <JoinButton quiz={quiz} />
+        <ButtonArea quiz={quiz} />
       </div>
     </main>
   );
