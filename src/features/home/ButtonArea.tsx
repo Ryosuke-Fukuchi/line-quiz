@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { createPlayer, patchPlayer } from "@/requests/player";
 import { QuizType } from "@/requests/quiz";
 import { PLAYER_STATUS } from "@/const.ts/player";
-import { useLiffContext } from "@/components/provider/liffProvider";
 import { usePlayerContext } from "@/components/provider/playerProvider";
 import { SpinLoading } from "@/components/loading/SpinLoading";
 
@@ -13,9 +12,9 @@ type PropsType = {
 };
 
 export const ButtonArea: React.FC<PropsType> = ({ quiz }) => {
-  const { profile } = useLiffContext();
   const {
     player,
+    profile,
     loading: playerLoading,
     refetch: refetchPlayer,
   } = usePlayerContext();
@@ -67,9 +66,9 @@ export const ButtonArea: React.FC<PropsType> = ({ quiz }) => {
         className="flex justify-center items-center border-2 border-emerald-700 text-white rounded-md bg-emerald-700 hover:border-emerald-700 hover:bg-white 
       hover:text-emerald-700 font-semibold text-xl tracking-wide shadow-md shadow-emerald-900/40 active:shadow-none py-2 px-6"
         onClick={handleJoin}
-        disabled={loading || playerLoading || !profile}
+        disabled={loading || playerLoading}
       >
-        {loading || playerLoading || !profile ? (
+        {loading || playerLoading ? (
           <SpinLoading text="Loading" />
         ) : (
           buttonType.text
