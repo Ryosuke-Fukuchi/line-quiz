@@ -15,10 +15,12 @@ import { useLiffContext } from "./liffProvider";
 type PlayerContextType = {
   player: PlayerType | null;
   refetch?: () => Promise<void>;
+  loading: boolean;
 };
 
 const PlayerContext = createContext<PlayerContextType>({
   player: null,
+  loading: false,
 });
 
 export const usePlayerContext = (): PlayerContextType => {
@@ -29,12 +31,15 @@ export const usePlayerContext = (): PlayerContextType => {
 export const PlayerProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const { profile } = useLiffContext();
   const [player, setPlayer] = useState<PlayerType | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const searchPlayer = useCallback(async () => {
+    setLoading(true);
     if (profile) {
       const player = await getPlayer(profile?.userId || "");
       setPlayer(player);
     }
+    setLoading(false);
   }, [profile]);
 
   const refetch = useCallback(async () => {
@@ -46,7 +51,7 @@ export const PlayerProvider: FC<{ children: ReactNode }> = ({ children }) => {
   }, [searchPlayer]);
 
   return (
-    <PlayerContext.Provider value={{ player, refetch }}>
+    <PlayerContext.Provider value={{ player, loading, refetch }}>
       {children}
     </PlayerContext.Provider>
   );

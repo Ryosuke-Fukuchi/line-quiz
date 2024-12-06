@@ -8,10 +8,15 @@ import { SpinLoading } from "@/components/loading/SpinLoading";
 
 type PropsType = {
   player: PlayerType;
+  playerLoading: boolean;
   refetchPlayer?: () => Promise<void>;
 };
 
-export const ButtonArea: React.FC<PropsType> = ({ player, refetchPlayer }) => {
+export const ButtonArea: React.FC<PropsType> = ({
+  player,
+  playerLoading,
+  refetchPlayer,
+}) => {
   const router = useRouter();
 
   const [loading, setLoading] = React.useState(false);
@@ -31,8 +36,13 @@ export const ButtonArea: React.FC<PropsType> = ({ player, refetchPlayer }) => {
           <button
             className="border-2 border-emerald-700 text-white rounded bg-emerald-700 hover:border-emerald-700 hover:bg-white 
         hover:text-emerald-700 font-semibold text-lg tracking-wide shadow-md shadow-emerald-900/40 active:shadow-none py-2 px-6"
+            disabled={loading || playerLoading}
           >
-            第{player.question_number}問に進む
+            {loading || playerLoading ? (
+              <SpinLoading text="Loading" />
+            ) : (
+              `第${player.question_number}問に進む`
+            )}
           </button>
         </Link>
       ) : (
@@ -40,8 +50,13 @@ export const ButtonArea: React.FC<PropsType> = ({ player, refetchPlayer }) => {
           className="border-2 border-emerald-700 text-white rounded bg-emerald-700 hover:border-emerald-700 hover:bg-white 
         hover:text-emerald-700 font-semibold text-lg tracking-wide shadow-md shadow-emerald-900/40 active:shadow-none py-2 px-6"
           onClick={toResultPage}
+          disabled={loading || playerLoading}
         >
-          {loading ? <SpinLoading text="Loading" /> : "結果を見る!"}
+          {loading || playerLoading ? (
+            <SpinLoading text="Loading" />
+          ) : (
+            "結果を見る!"
+          )}
         </button>
       )}
     </>
