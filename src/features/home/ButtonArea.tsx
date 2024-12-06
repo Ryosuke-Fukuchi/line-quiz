@@ -3,43 +3,46 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { createPlayer, getPlayer, PlayerType } from "@/requests/player";
 import { QuizType } from "@/requests/quiz";
-import * as liff from "@/requests/liff/authenticate";
 import { PLAYER_STATUS } from "@/const.ts/player";
 import { getQuestionByNumber } from "@/requests/question";
+import { useLiff } from "@/app/liffProvider";
 
 type PropsType = {
   quiz: QuizType;
 };
 
 export const ButtonArea: React.FC<PropsType> = ({ quiz }) => {
+  const { liffState, liffError } = useLiff();
   const router = useRouter();
-  const [isValid, setIsValid] = React.useState<null | boolean>(null);
   const [player, setPlayer] = React.useState<PlayerType | null>(null);
+  const [isValid, setIsValid] = React.useState<boolean | null>(null);
   const [loading, setLoading] = React.useState(false);
 
-  const searchPlayer = React.useCallback(async () => {
-    const userId = "xxx";
-    const player = await getPlayer(userId);
-    return player;
-  }, []);
+  const [profile, setProfile] = React.useState<{
+    displayName: string;
+    userId: string;
+  } | null>(null);
 
-  const authenticate = React.useCallback(async () => {
+  const getProfile = React.useCallback(async () => {
     setLoading(true);
-    const accessToken = "liffState?.getAccessToken()";
-    const isValid = await liff.authenticate(accessToken);
-    setIsValid(isValid);
-
-    if (isValid) {
-      const player = await searchPlayer();
-      setPlayer(player);
+    if (liffState) {
+      try {
+        const profile = await liffState.getProfile();
+        setProfile(profile);
+        setIsValid(true);
+        const player = await getPlayer(profile.userId);
+        setPlayer(player);
+      } catch (e) {
+        console.error(e);
+        setIsValid(false);
+      }
     }
     setLoading(false);
-  }, [searchPlayer]);
+  }, [liffState]);
 
   React.useEffect(() => {
-    if (isValid) return;
-    authenticate();
-  }, [isValid, authenticate]);
+    getProfile();
+  }, [getProfile]);
 
   const buttonType = React.useMemo(() => {
     if (isValid == null) return { text: "loading", type: "loading" };
@@ -55,8 +58,8 @@ export const ButtonArea: React.FC<PropsType> = ({ quiz }) => {
     switch (buttonType.type) {
       case "join":
         await createPlayer({
-          name: "Ryosukex",
-          user_id: "xxx",
+          name: profile?.displayName as string,
+          user_id: profile?.userId as string,
           quiz_id: quiz.id,
         });
         router.push("/question");
@@ -75,6 +78,10 @@ export const ButtonArea: React.FC<PropsType> = ({ quiz }) => {
     }
     setLoading(false);
   };
+
+  if (liffError) {
+    return "エラーが発生しました";
+  }
 
   return (
     <button
