@@ -6,6 +6,7 @@ import { QuizType } from "@/requests/quiz";
 import { PLAYER_STATUS } from "@/const.ts/player";
 import { useLiffContext } from "@/components/provider/liffProvider";
 import { usePlayerContext } from "@/components/provider/playerProvider";
+import { SpinLoading } from "@/components/loading/SpinLoading";
 
 type PropsType = {
   quiz: QuizType;
@@ -57,13 +58,15 @@ export const ButtonArea: React.FC<PropsType> = ({ quiz }) => {
   };
 
   return (
-    <button
-      className="border-2 border-emerald-700 text-white rounded-md bg-emerald-700 hover:border-emerald-700 hover:bg-white 
-hover:text-emerald-700 font-semibold text-xl tracking-wide shadow-md shadow-emerald-900/40 active:shadow-none py-2 px-6"
-      onClick={handleJoin}
-      disabled={loading || !profile}
-    >
-      {loading ? "loading..." : buttonType.text}
-    </button>
+    <>
+      <button
+        className="flex justify-center items-center border-2 border-emerald-700 text-white rounded-md bg-emerald-700 hover:border-emerald-700 hover:bg-white 
+      hover:text-emerald-700 font-semibold text-xl tracking-wide shadow-md shadow-emerald-900/40 active:shadow-none py-2 px-6"
+        onClick={handleJoin}
+        disabled={loading || !profile}
+      >
+        {!loading ? <SpinLoading text="Loading" /> : buttonType.text}
+      </button>
+    </>
   );
 };

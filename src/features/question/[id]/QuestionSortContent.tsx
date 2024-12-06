@@ -7,6 +7,7 @@ import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
 import { QUESTION_TYPE } from "@/const.ts/question";
 import { PLAYER_STATUS } from "@/const.ts/player";
+import { SpinLoading } from "@/components/loading/SpinLoading";
 
 type ChoiceType = { pk: number; value: string; correct_sort_order: number };
 
@@ -136,7 +137,7 @@ export const QuestionSortContent: React.FC<PropsType> = ({
           disabled={selected.length !== choices.length || loading || isDone}
           onClick={handleAnswer}
         >
-          {loading ? "loading..." : buttonText}
+          {loading ? <SpinLoading text="Loading" /> : buttonText}
         </button>
       </div>
     </div>

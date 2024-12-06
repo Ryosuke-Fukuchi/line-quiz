@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { patchPlayer, PlayerType } from "@/requests/player";
 import Link from "next/link";
 import { PLAYER_STATUS } from "@/const.ts/player";
+import { SpinLoading } from "@/components/loading/SpinLoading";
 
 type PropsType = {
   player: PlayerType;
@@ -40,7 +41,7 @@ export const ButtonArea: React.FC<PropsType> = ({ player, refetchPlayer }) => {
         hover:text-emerald-700 font-semibold text-lg tracking-wide shadow-md shadow-emerald-900/40 active:shadow-none py-2 px-6"
           onClick={toResultPage}
         >
-          {loading ? "loading..." : "結果を見る!"}
+          {loading ? <SpinLoading text="Loading" /> : "結果を見る!"}
         </button>
       )}
     </>
