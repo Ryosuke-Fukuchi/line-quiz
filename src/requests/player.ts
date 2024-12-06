@@ -30,6 +30,14 @@ export async function getPlayer(userId: string): Promise<PlayerType | null> {
   return res.json();
 }
 
+export async function getPlayers(quizId: number): Promise<PlayerType[]> {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_HOST}/api/player/list/${quizId}`
+  );
+  const data = await res.json();
+  return data.players;
+}
+
 export async function patchPlayer(
   playerId: number,
   player: Partial<Omit<PlayerType, "next_question_id">>
