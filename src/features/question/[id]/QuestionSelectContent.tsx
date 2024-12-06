@@ -150,6 +150,7 @@ export const QuestionSelectContent: React.FC<PropsType> = ({
             "border-2 border-zinc-300 bg-zinc-200 text-zinc-400 rounded text-lg tracking-wide py-2 px-6",
             clsx(
               selected.length === question.select_counts &&
+                !isDone &&
                 "font-semibold border-emerald-700 text-white bg-emerald-700 hover:border-emerald-700 hover:bg-white hover:text-emerald-700 shadow-md shadow-emerald-900/40 active:shadow-none"
             )
           )}
