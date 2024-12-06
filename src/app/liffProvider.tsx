@@ -6,18 +6,22 @@ import {
   useState,
   useEffect,
   FC,
+  useCallback,
   ReactNode,
   useContext,
 } from "react";
 
 type LiffContextType = {
   liffState: Liff | null;
-  liffError: string | null;
+  profile: {
+    displayName: string;
+    userId: string;
+  } | null;
 };
 
 const LiffContext = createContext<LiffContextType>({
   liffState: null,
-  liffError: null,
+  profile: null,
 });
 
 export const useLiff = (): LiffContextType => {
@@ -28,6 +32,10 @@ export const useLiff = (): LiffContextType => {
 export const LiffProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [liffState, setliffState] = useState<Liff | null>(null);
   const [liffError, setLiffError] = useState<string | null>(null);
+  const [profile, setProfile] = useState<{
+    displayName: string;
+    userId: string;
+  } | null>(null);
 
   useEffect(() => {
     liff.init(
@@ -42,8 +50,27 @@ export const LiffProvider: FC<{ children: ReactNode }> = ({ children }) => {
     );
   }, []);
 
+  const getProfile = useCallback(async () => {
+    if (liffState) {
+      try {
+        const profile = await liffState.getProfile();
+        setProfile(profile);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, [liffState]);
+
+  useEffect(() => {
+    getProfile();
+  }, [getProfile]);
+
+  if (liffError) {
+    return "エラーが発生しました";
+  }
+
   return (
-    <LiffContext.Provider value={{ liffState, liffError }}>
+    <LiffContext.Provider value={{ liffState, profile }}>
       {children}
     </LiffContext.Provider>
   );
