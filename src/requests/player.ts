@@ -60,7 +60,7 @@ export async function createPlayer(
     | "playeranswer_set"
   >
 ) {
-  await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/player/`, {
+  await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/player`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(player),
