@@ -1,10 +1,10 @@
 "use client";
+import { usePlayerContext } from "@/components/provider/playerProvider";
 import { ButtonArea } from "@/features/question/ButtonArea";
 import { notFound } from "next/navigation";
-import { usePlayer } from "../playerProvider";
 
 export default function QuestionPage() {
-  const { player } = usePlayer();
+  const { player } = usePlayerContext();
 
   if (!player) {
     notFound();

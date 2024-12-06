@@ -8,7 +8,7 @@ import {
 import { QuestionSelectContent } from "./QuestionSelectContent";
 import { QuestionSortContent } from "./QuestionSortContent";
 import { QUESTION_TYPE } from "@/const.ts/question";
-import { usePlayer } from "@/app/playerProvider";
+import { usePlayerContext } from "@/app/playerProvider";
 import { notFound, useRouter } from "next/navigation";
 import { PLAYER_STATUS } from "@/const.ts/player";
 import { patchPlayer } from "@/requests/player";
@@ -22,7 +22,7 @@ export const QuestionContent: React.FC<PropsType> = ({
   question,
   isLastQuestion,
 }) => {
-  const { player, refetch } = usePlayer();
+  const { player, refetch } = usePlayerContext();
 
   if (!player) {
     notFound();

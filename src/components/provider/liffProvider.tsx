@@ -24,7 +24,7 @@ const LiffContext = createContext<LiffContextType>({
   profile: null,
 });
 
-export const useLiff = (): LiffContextType => {
+export const useLiffContext = (): LiffContextType => {
   const context = useContext(LiffContext);
   return context;
 };

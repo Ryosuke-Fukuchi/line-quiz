@@ -4,16 +4,16 @@ import { useRouter } from "next/navigation";
 import { createPlayer, patchPlayer } from "@/requests/player";
 import { QuizType } from "@/requests/quiz";
 import { PLAYER_STATUS } from "@/const.ts/player";
-import { useLiff } from "@/app/liffProvider";
-import { usePlayer } from "@/app/playerProvider";
+import { useLiffContext } from "@/components/provider/liffProvider";
+import { usePlayerContext } from "@/components/provider/playerProvider";
 
 type PropsType = {
   quiz: QuizType;
 };
 
 export const ButtonArea: React.FC<PropsType> = ({ quiz }) => {
-  const { profile } = useLiff();
-  const { player, refetch: refetchPlayer } = usePlayer();
+  const { profile } = useLiffContext();
+  const { player, refetch: refetchPlayer } = usePlayerContext();
   const router = useRouter();
   const [loading, setLoading] = React.useState(false);
 

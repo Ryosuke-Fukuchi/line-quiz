@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { LiffProvider } from "./liffProvider";
-import { PlayerProvider } from "./playerProvider";
+import { LiffProvider } from "../components/provider/liffProvider";
+import { PlayerProvider } from "@/components/provider/playerProvider";
 
 export const metadata: Metadata = {
   title: "LINE Answers",
