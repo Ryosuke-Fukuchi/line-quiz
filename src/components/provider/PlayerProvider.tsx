@@ -10,7 +10,7 @@ import {
   useContext,
   useCallback,
 } from "react";
-import { useLiffContext } from "./liffProvider";
+import { useLiffContext } from "./LiffProvider";
 
 type PlayerContextType = {
   player: PlayerType | null;

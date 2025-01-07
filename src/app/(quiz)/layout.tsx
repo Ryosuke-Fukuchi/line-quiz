@@ -1,5 +1,5 @@
-import { LiffProvider } from "@/components/provider/liffProvider";
-import { PlayerProvider } from "@/components/provider/playerProvider";
+import { LiffProvider } from "@/components/provider/LiffProvider";
+import { PlayerProvider } from "@/components/provider/PlayerProvider";
 
 export default function TestLayout({
   children,

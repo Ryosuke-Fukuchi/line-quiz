@@ -1,5 +1,5 @@
 "use client";
-import { usePlayerContext } from "@/components/provider/playerProvider";
+import { usePlayerContext } from "@/components/provider/PlayerProvider";
 import { ButtonArea } from "@/features/player_result/[id]/ButtonArea";
 
 export default function ResultPage() {

@@ -1,5 +1,5 @@
 "use client";
-import { usePlayerContext } from "@/components/provider/playerProvider";
+import { usePlayerContext } from "@/components/provider/PlayerProvider";
 import { ButtonArea } from "@/features/question/ButtonArea";
 
 export default function QuestionPage() {

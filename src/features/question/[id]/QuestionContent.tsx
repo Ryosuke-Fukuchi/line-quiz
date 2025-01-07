@@ -11,7 +11,7 @@ import { QUESTION_TYPE } from "@/const.ts/question";
 import { notFound, useRouter } from "next/navigation";
 import { PLAYER_STATUS } from "@/const.ts/player";
 import { patchPlayer } from "@/requests/player";
-import { usePlayerContext } from "@/components/provider/playerProvider";
+import { usePlayerContext } from "@/components/provider/PlayerProvider";
 
 type PropsType = {
   question: QuestionType;
