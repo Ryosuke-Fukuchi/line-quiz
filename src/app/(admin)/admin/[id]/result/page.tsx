@@ -1,10 +1,19 @@
 import { getPlayers } from "@/requests/player";
 import { getQuizForAdmin } from "@/requests/quiz";
 import clsx from "clsx";
+import { notFound } from "next/navigation";
 import { LuCrown } from "react-icons/lu";
 
-export default async function AdminResultPage() {
-  const quiz = await getQuizForAdmin();
+export default async function AdminResultPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id: quizPublicId } = await params;
+  const quiz = await getQuizForAdmin(quizPublicId);
+  if (!quiz) {
+    notFound();
+  }
   const players = await getPlayers(quiz.id);
 
   const sortedPlayers = players.sort(

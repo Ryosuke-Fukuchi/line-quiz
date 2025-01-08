@@ -1,8 +1,17 @@
 import { getPlayers } from "@/requests/player";
 import { getQuizForAdmin } from "@/requests/quiz";
+import { notFound } from "next/navigation";
 
-export default async function AdminPage() {
-  const quiz = await getQuizForAdmin();
+export default async function AdminPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id: quizPublicId } = await params;
+  const quiz = await getQuizForAdmin(quizPublicId);
+  if (!quiz) {
+    notFound();
+  }
   const players = await getPlayers(quiz.id);
   return (
     <main className="min-h-screen p-8 pb-20">

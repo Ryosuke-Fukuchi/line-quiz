@@ -8,6 +8,7 @@ export type QuizType = {
 };
 
 export async function getQuiz(): Promise<QuizType> {
+  // クライアントからリクエストを行わないので直supabaseを使う
   const { data, error } = await supabase
     .from("Quiz")
     .select(
@@ -30,9 +31,27 @@ export async function getQuiz(): Promise<QuizType> {
   return data[0];
 }
 
-export async function getQuizForAdmin(): Promise<QuizType> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/quiz`, {
-    cache: "no-store",
-  });
-  return res.json();
+export async function getQuizForAdmin(
+  quizPubilcId: string
+): Promise<QuizType | null> {
+  // クライアントからリクエストを行わないので直supabaseを使う
+  const { data, error } = await supabase
+    .from("Quiz")
+    .select(
+      `
+      id,
+      title,
+      description,
+      question_set:Question (
+        id
+      )
+    `
+    )
+    .eq("public_id", quizPubilcId);
+
+  if (error || !data || data.length === 0) {
+    return null; // 非正規のアクセスの場合はthrow errorではなくnullを返す
+  }
+
+  return data[0];
 }
