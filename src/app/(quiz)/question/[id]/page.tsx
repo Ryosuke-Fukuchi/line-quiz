@@ -1,6 +1,6 @@
 import { QuestionContent } from "@/features/question/[id]/QuestionContent";
 import { getQuestion } from "@/requests/question";
-import { getQuiz } from "@/requests/quiz";
+import { getQuiz } from "@/requests/server/quiz";
 import { supabase } from "@/utils/supabase";
 import { notFound } from "next/navigation";
 

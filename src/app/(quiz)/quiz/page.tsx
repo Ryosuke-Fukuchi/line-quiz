@@ -1,5 +1,5 @@
 import { ButtonArea } from "@/features/home/ButtonArea";
-import { getQuiz } from "@/requests/quiz";
+import { getQuiz } from "@/requests/server/quiz";
 
 export default async function Home() {
   const quiz = await getQuiz();

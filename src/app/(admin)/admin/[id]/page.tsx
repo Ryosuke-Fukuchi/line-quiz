@@ -1,5 +1,5 @@
 import { getPlayers } from "@/requests/player";
-import { getQuizForAdmin } from "@/requests/quiz";
+import { getQuizForAdmin } from "@/requests/server/quiz";
 import { notFound } from "next/navigation";
 
 export default async function AdminPage({

@@ -1,5 +1,5 @@
 import { getPlayers } from "@/requests/player";
-import { getQuizForAdmin } from "@/requests/quiz";
+import { getQuizForAdmin } from "@/requests/server/quiz";
 import clsx from "clsx";
 import { notFound } from "next/navigation";
 import { LuCrown } from "react-icons/lu";
