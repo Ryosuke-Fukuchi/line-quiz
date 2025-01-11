@@ -1,12 +1,7 @@
-import { NextResponse } from "next/server";
 import { supabase } from "@/utils/supabase";
+import { QuestionType } from "@/types/questionTypes";
 
-export async function GET(
-  _: never,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const { id: questionId } = await params;
-
+export async function getQuestion(questionId: string): Promise<QuestionType> {
   const { data, error } = await supabase
     .from("Question")
     .select(
@@ -42,17 +37,10 @@ export async function GET(
     )
     .eq("id", questionId);
 
-  if (error || !data) {
+  if (error || !data || data.length === 0) {
     console.error("Error occurred:", error);
-    return NextResponse.json(
-      { message: "Error fetching data" },
-      { status: 500 }
-    );
+    throw new Error("Error fetching question data");
   }
 
-  if (!data[0]) {
-    return NextResponse.json({ message: "No Question found" }, { status: 404 });
-  }
-
-  return NextResponse.json(data[0]);
+  return data[0] as unknown as QuestionType;
 }

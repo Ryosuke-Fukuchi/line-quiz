@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import { QuestionSortType } from "@/requests/question";
 import { createPlayerAnswer, patchPlayer } from "@/requests/client/player";
 import { PlayerType } from "@/types/playerTypes";
 import { useRouter } from "next/navigation";
@@ -9,6 +8,7 @@ import { twMerge } from "tailwind-merge";
 import { QUESTION_TYPE } from "@/const.ts/question";
 import { PLAYER_STATUS } from "@/const.ts/player";
 import { SpinLoading } from "@/components/loading/SpinLoading";
+import { QuestionSortType } from "@/types/questionTypes";
 
 type ChoiceType = { pk: number; value: string; correct_sort_order: number };
 

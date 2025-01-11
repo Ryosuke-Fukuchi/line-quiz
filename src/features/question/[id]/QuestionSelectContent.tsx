@@ -3,12 +3,12 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
-import { QuestionSelectType } from "@/requests/question";
 import { QUESTION_TYPE } from "@/const.ts/question";
 import { createPlayerAnswer, patchPlayer } from "@/requests/client/player";
 import { PLAYER_STATUS } from "@/const.ts/player";
 import { SpinLoading } from "@/components/loading/SpinLoading";
 import { PlayerType } from "@/types/playerTypes";
+import { QuestionSelectType } from "@/types/questionTypes";
 
 type ChoiceType = { pk: number; value: string; is_answer: boolean };
 

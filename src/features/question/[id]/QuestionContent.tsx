@@ -1,10 +1,5 @@
 "use client";
 import React from "react";
-import {
-  QuestionSelectType,
-  QuestionSortType,
-  QuestionType,
-} from "@/requests/question";
 import { QuestionSelectContent } from "./QuestionSelectContent";
 import { QuestionSortContent } from "./QuestionSortContent";
 import { QUESTION_TYPE } from "@/const.ts/question";
@@ -12,6 +7,11 @@ import { notFound, useRouter } from "next/navigation";
 import { PLAYER_STATUS } from "@/const.ts/player";
 import { patchPlayer } from "@/requests/client/player";
 import { usePlayerContext } from "@/components/provider/PlayerProvider";
+import {
+  QuestionSelectType,
+  QuestionSortType,
+  QuestionType,
+} from "@/types/questionTypes";
 
 type PropsType = {
   question: QuestionType;
