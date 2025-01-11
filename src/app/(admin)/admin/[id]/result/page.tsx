@@ -1,4 +1,4 @@
-import { getPlayers } from "@/requests/player";
+import { getPlayers } from "@/requests/server/player";
 import { getQuizForAdmin } from "@/requests/server/quiz";
 import clsx from "clsx";
 import { notFound } from "next/navigation";

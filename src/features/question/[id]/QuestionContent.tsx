@@ -10,7 +10,7 @@ import { QuestionSortContent } from "./QuestionSortContent";
 import { QUESTION_TYPE } from "@/const.ts/question";
 import { notFound, useRouter } from "next/navigation";
 import { PLAYER_STATUS } from "@/const.ts/player";
-import { patchPlayer } from "@/requests/player";
+import { patchPlayer } from "@/requests/client/player";
 import { usePlayerContext } from "@/components/provider/PlayerProvider";
 
 type PropsType = {

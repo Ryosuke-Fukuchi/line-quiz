@@ -1,6 +1,7 @@
 "use client";
 
-import { getPlayer, PlayerType } from "@/requests/player";
+import { getPlayer } from "@/requests/client/player";
+import { PlayerType } from "@/types/playerTypes";
 import {
   createContext,
   useState,

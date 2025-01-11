@@ -1,24 +1,4 @@
-export type PlayerAnswerType = {
-  id: number;
-  content: string;
-  earned_points: number;
-  question_type: string;
-  question_number: number;
-  player_id: number;
-  question_id: number;
-};
-
-export type PlayerType = {
-  id: number;
-  name: string;
-  user_id: string;
-  status: string;
-  earned_points: number;
-  question_number: number;
-  quiz_id: number;
-  next_question_id: number;
-  playeranswer_set: PlayerAnswerType[];
-};
+import { PlayerAnswerType, PlayerType } from "@/types/playerTypes";
 
 export async function getPlayer(userId: string): Promise<PlayerType | null> {
   const res = await fetch(
@@ -31,14 +11,6 @@ export async function getPlayer(userId: string): Promise<PlayerType | null> {
     return null;
   }
   return res.json();
-}
-
-export async function getPlayers(quizId: number): Promise<PlayerType[]> {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_HOST}/api/player/list/${quizId}`
-  );
-  const data = await res.json();
-  return data.players;
 }
 
 export async function patchPlayer(

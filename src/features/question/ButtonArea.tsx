@@ -1,7 +1,8 @@
 "use client";
 import React from "react";
 import { useRouter } from "next/navigation";
-import { patchPlayer, PlayerType } from "@/requests/player";
+import { patchPlayer } from "@/requests/client/player";
+import { PlayerType } from "@/types/playerTypes";
 import Link from "next/link";
 import { PLAYER_STATUS } from "@/const.ts/player";
 import { SpinLoading } from "@/components/loading/SpinLoading";

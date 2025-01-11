@@ -5,9 +5,10 @@ import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
 import { QuestionSelectType } from "@/requests/question";
 import { QUESTION_TYPE } from "@/const.ts/question";
-import { createPlayerAnswer, patchPlayer, PlayerType } from "@/requests/player";
+import { createPlayerAnswer, patchPlayer } from "@/requests/client/player";
 import { PLAYER_STATUS } from "@/const.ts/player";
 import { SpinLoading } from "@/components/loading/SpinLoading";
+import { PlayerType } from "@/types/playerTypes";
 
 type ChoiceType = { pk: number; value: string; is_answer: boolean };
 
@@ -86,6 +87,7 @@ export const QuestionSelectContent: React.FC<PropsType> = ({
       status: isLastQuestion ? PLAYER_STATUS.done : PLAYER_STATUS.playing,
     };
 
+    // TODO: 入れ子更新が可能か
     await createPlayerAnswer(player.id, answerPayload);
     await patchPlayer(player.id, playerPayload);
     await refetchPlayer?.();
