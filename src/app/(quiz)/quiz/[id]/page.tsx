@@ -1,8 +1,17 @@
 import { ButtonArea } from "@/features/home/ButtonArea";
-import { getQuiz } from "@/requests/server/quiz";
+import { getQuizByPublicId } from "@/requests/server/quiz";
+import { notFound } from "next/navigation";
 
-export default async function Home() {
-  const quiz = await getQuiz();
+export default async function Home({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id: quizPublicId } = await params;
+  const quiz = await getQuizByPublicId(quizPublicId);
+  if (!quiz) {
+    notFound();
+  }
   return (
     <main className="min-h-screen p-8 pb-20 flex flex-col items-center">
       <div className="p-1">

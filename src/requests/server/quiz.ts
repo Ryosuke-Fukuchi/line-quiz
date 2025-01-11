@@ -7,7 +7,7 @@ export type QuizType = {
   question_set: { id: number }[];
 };
 
-export async function getQuiz(): Promise<QuizType> {
+export async function getQuiz(quizId: number): Promise<QuizType> {
   // クライアントからリクエストを行わないので直supabaseを使う
   const { data, error } = await supabase
     .from("Quiz")
@@ -21,7 +21,7 @@ export async function getQuiz(): Promise<QuizType> {
     )
   `
     )
-    .eq("id", process.env.QUIZ_ID);
+    .eq("id", quizId);
 
   if (error || !data || data.length === 0) {
     console.error("Error occurred:", error);
@@ -31,7 +31,7 @@ export async function getQuiz(): Promise<QuizType> {
   return data[0];
 }
 
-export async function getQuizForAdmin(
+export async function getQuizByPublicId(
   quizPubilcId: string
 ): Promise<QuizType | null> {
   // クライアントからリクエストを行わないので直supabaseを使う

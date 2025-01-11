@@ -1,5 +1,5 @@
 import { getPlayers } from "@/requests/server/player";
-import { getQuizForAdmin } from "@/requests/server/quiz";
+import { getQuizByPublicId } from "@/requests/server/quiz";
 import clsx from "clsx";
 import { notFound } from "next/navigation";
 import { LuCrown } from "react-icons/lu";
@@ -10,7 +10,7 @@ export default async function AdminResultPage({
   params: Promise<{ id: string }>;
 }) {
   const { id: quizPublicId } = await params;
-  const quiz = await getQuizForAdmin(quizPublicId);
+  const quiz = await getQuizByPublicId(quizPublicId);
   if (!quiz) {
     notFound();
   }

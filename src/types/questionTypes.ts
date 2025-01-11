@@ -28,6 +28,7 @@ export type QuestionType = {
   content: string;
   question_type: string;
   question_number: number;
+  quiz_id: number;
   questionselect: QuestionSelectType | null;
   questionsort: QuestionSortType | null;
 };

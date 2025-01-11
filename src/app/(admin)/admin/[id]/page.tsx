@@ -1,5 +1,5 @@
 import { getPlayers } from "@/requests/server/player";
-import { getQuizForAdmin } from "@/requests/server/quiz";
+import { getQuizByPublicId } from "@/requests/server/quiz";
 import { notFound } from "next/navigation";
 
 export default async function AdminPage({
@@ -8,7 +8,7 @@ export default async function AdminPage({
   params: Promise<{ id: string }>;
 }) {
   const { id: quizPublicId } = await params;
-  const quiz = await getQuizForAdmin(quizPublicId);
+  const quiz = await getQuizByPublicId(quizPublicId);
   if (!quiz) {
     notFound();
   }
