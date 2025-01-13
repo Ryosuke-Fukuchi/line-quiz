@@ -1,6 +1,5 @@
 import { QuestionContent } from "@/features/question/[id]/QuestionContent";
 import { getQuestion } from "@/requests/server/question";
-import { getQuiz } from "@/requests/server/quiz";
 import { notFound } from "next/navigation";
 
 export default async function QuestionContentPage({
@@ -10,13 +9,13 @@ export default async function QuestionContentPage({
 }) {
   const { id: questionId } = await params;
   const question = await getQuestion(questionId);
-  const quiz = await getQuiz(question.quiz_id);
 
   if (!question) {
     notFound();
   }
 
-  const isLastQuestion = question?.question_number === quiz.question_set.length;
+  const isLastQuestion =
+    question?.question_number === question.quiz.question_set.length;
 
   return (
     <main className="min-h-screen px-8 py-4 pb-20 flex flex-col">
