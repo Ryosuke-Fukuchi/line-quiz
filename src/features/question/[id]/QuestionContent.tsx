@@ -85,6 +85,7 @@ export const QuestionContent: React.FC<PropsType> = ({
   return (
     <>
       {Content}
+      {/* ユーザーが解党後にバックして戻ってきた場合、ナビゲーションボタンを表示する */}
       {isDone && (
         <div className="flex justify-center py-3">
           <button
