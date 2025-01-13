@@ -1,8 +1,8 @@
-import { ButtonArea } from "@/features/home/ButtonArea";
+import { ButtonArea } from "@/features/quiz/[id]/ButtonArea";
 import { getQuizByPublicId } from "@/requests/server/quiz";
 import { notFound } from "next/navigation";
 
-export default async function Home({
+export default async function QuizPage({
   params,
 }: {
   params: Promise<{ id: string }>;
