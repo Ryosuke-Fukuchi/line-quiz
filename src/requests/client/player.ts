@@ -15,7 +15,7 @@ export async function getPlayer(userId: string): Promise<PlayerType | null> {
 
 export async function patchPlayer(
   playerId: number,
-  player: Partial<Omit<PlayerType, "next_question_id">>
+  player: Partial<PlayerType>
 ) {
   await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/player/${playerId}`, {
     method: "PATCH",
@@ -27,12 +27,7 @@ export async function patchPlayer(
 export async function createPlayer(
   player: Omit<
     PlayerType,
-    | "id"
-    | "status"
-    | "next_question_id"
-    | "earned_points"
-    | "question_number"
-    | "playeranswer_set"
+    "id" | "status" | "earned_points" | "question_number" | "playeranswer_set"
   >
 ) {
   await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/player`, {

@@ -48,6 +48,7 @@ export const QuestionContent: React.FC<PropsType> = ({
           <QuestionSelectContent
             questionId={question.id}
             player={player}
+            quiz={question.quiz}
             refetchPlayer={refetch}
             questionNumber={question.question_number}
             question={question.questionselect as QuestionSelectType}
@@ -60,6 +61,7 @@ export const QuestionContent: React.FC<PropsType> = ({
           <QuestionSortContent
             questionId={question.id}
             player={player}
+            quiz={question.quiz}
             refetchPlayer={refetch}
             questionNumber={question.question_number}
             question={question.questionsort as QuestionSortType}
@@ -70,17 +72,7 @@ export const QuestionContent: React.FC<PropsType> = ({
       default:
         return null;
     }
-  }, [
-    isLastQuestion,
-    player,
-    question.id,
-    question.question_number,
-    question.question_type,
-    question.questionselect,
-    question.questionsort,
-    refetch,
-    isDone,
-  ]);
+  }, [isLastQuestion, player, question, refetch, isDone]);
 
   return (
     <>

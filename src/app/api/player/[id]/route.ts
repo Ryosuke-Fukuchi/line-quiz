@@ -29,26 +29,7 @@ export async function GET(
     return NextResponse.json({ message: "No player found" }, { status: 404 });
   }
 
-  const player = data[0];
-
-  const { data: questionData, error: questionError } = await supabase
-    .from("Question")
-    .select("*")
-    .eq("question_number", player.question_number)
-    .eq("quiz_id", process.env.QUIZ_ID);
-
-  if (questionError || !questionData) {
-    console.error("Error occurred:", error);
-    return NextResponse.json(
-      { message: "Error fetching data" },
-      { status: 500 }
-    );
-  }
-
-  return NextResponse.json(
-    { ...player, next_question_id: questionData[0]?.id ?? -1 },
-    { status: 200 }
-  );
+  return NextResponse.json(data[0], { status: 200 });
 }
 
 export async function PATCH(

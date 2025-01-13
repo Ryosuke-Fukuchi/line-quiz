@@ -36,6 +36,9 @@ export const ButtonArea: React.FC<PropsType> = ({ quiz }) => {
           name: profile?.displayName as string,
           user_id: profile?.userId as string,
           quiz_id: quiz.id,
+          next_question_id: quiz.question_set.find(
+            (q) => q.question_number === 1
+          )?.id as number,
         });
         await refetchPlayer?.();
         router.push("/question");

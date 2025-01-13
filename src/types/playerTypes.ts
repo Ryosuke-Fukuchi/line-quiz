@@ -16,6 +16,6 @@ export type PlayerType = {
   earned_points: number;
   question_number: number;
   quiz_id: number;
-  next_question_id: number;
+  next_question_id: number | null;
   playeranswer_set: PlayerAnswerType[];
 };

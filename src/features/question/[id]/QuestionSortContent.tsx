@@ -8,7 +8,7 @@ import { twMerge } from "tailwind-merge";
 import { QUESTION_TYPE } from "@/const.ts/question";
 import { PLAYER_STATUS } from "@/const.ts/player";
 import { SpinLoading } from "@/components/loading/SpinLoading";
-import { QuestionSortType } from "@/types/questionTypes";
+import { QuestionSortType, QuestionType } from "@/types/questionTypes";
 
 type ChoiceType = { pk: number; value: string; correct_sort_order: number };
 
@@ -16,6 +16,7 @@ type PropsType = {
   questionId: number;
   questionNumber: number;
   question: QuestionSortType;
+  quiz: QuestionType["quiz"];
   player: PlayerType;
   refetchPlayer?: () => Promise<void>;
   isLastQuestion: boolean;
@@ -26,6 +27,7 @@ export const QuestionSortContent: React.FC<PropsType> = ({
   questionId,
   questionNumber,
   question,
+  quiz,
   player,
   refetchPlayer,
   isLastQuestion,
@@ -86,6 +88,9 @@ export const QuestionSortContent: React.FC<PropsType> = ({
       id: player.id,
       earned_points: player.earned_points + earnedPoints,
       question_number: questionNumber + 1,
+      next_question_id: isLastQuestion
+        ? null
+        : (quiz.question_set[questionNumber + 1]?.id as number),
       status: isLastQuestion ? PLAYER_STATUS.done : PLAYER_STATUS.playing,
     };
 

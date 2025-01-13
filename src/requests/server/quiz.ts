@@ -11,7 +11,8 @@ export async function getQuiz(quizId: number): Promise<QuizType> {
     title,
     description,
     question_set:Question (
-      id
+      id,
+      question_number
     )
   `
     )
@@ -37,7 +38,8 @@ export async function getQuizByPublicId(
       title,
       description,
       question_set:Question (
-        id
+        id,
+        question_number
       )
     `
     )

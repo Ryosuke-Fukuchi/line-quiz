@@ -10,7 +10,13 @@ export async function getQuestion(questionId: string): Promise<QuestionType> {
           content,
           question_type,
           question_number,
-          quiz_id,
+          quiz:Quiz (
+            id,
+            question_set:Question (
+              id,
+              question_number
+            )
+          ),
           questionselect:QuestionSelect (
             id,
             answer_points,
