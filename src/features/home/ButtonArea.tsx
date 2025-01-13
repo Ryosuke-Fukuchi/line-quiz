@@ -2,10 +2,10 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { createPlayer, patchPlayer } from "@/requests/client/player";
-import { QuizType } from "@/requests/server/quiz";
 import { PLAYER_STATUS } from "@/const.ts/player";
 import { usePlayerContext } from "@/components/provider/PlayerProvider";
 import { SpinLoading } from "@/components/loading/SpinLoading";
+import { QuizType } from "@/types/quizTypes";
 
 type PropsType = {
   quiz: QuizType;

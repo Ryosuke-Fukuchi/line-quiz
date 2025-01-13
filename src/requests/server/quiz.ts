@@ -1,11 +1,5 @@
 import { supabase } from "@/utils/supabase";
-
-export type QuizType = {
-  id: number;
-  title: string;
-  description: string;
-  question_set: { id: number }[];
-};
+import { QuizType } from "@/types/quizTypes";
 
 export async function getQuiz(quizId: number): Promise<QuizType> {
   // クライアントからリクエストを行わないので直supabaseを使う
