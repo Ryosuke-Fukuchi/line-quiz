@@ -88,7 +88,9 @@ export const QuestionSelectContent: React.FC<PropsType> = ({
       question_number: questionNumber + 1,
       next_question_id: isLastQuestion
         ? null
-        : (quiz.question_set[questionNumber + 1]?.id as number),
+        : (quiz.question_set.find(
+            (q) => q.question_number === questionNumber + 1
+          )?.id as number),
       status: isLastQuestion ? PLAYER_STATUS.done : PLAYER_STATUS.playing,
     };
 
