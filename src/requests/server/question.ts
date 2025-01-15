@@ -1,7 +1,9 @@
 import { supabase } from "@/utils/supabase";
 import { QuestionType } from "@/types/questionTypes";
 
-export async function getQuestion(questionId: string): Promise<QuestionType> {
+export async function getQuestion(
+  questionPublicId: string
+): Promise<QuestionType | null> {
   const { data, error } = await supabase
     .from("Question")
     .select(
@@ -42,12 +44,12 @@ export async function getQuestion(questionId: string): Promise<QuestionType> {
           )
         `
     )
-    .eq("id", questionId);
+    .eq("public_id", questionPublicId);
 
   if (error || !data || data.length === 0) {
-    console.error("Error occurred:", error);
-    throw new Error("Error fetching question data");
+    return null; // 非正規のアクセスの場合はthrow errorではなくnullを返す
   }
 
-  return data[0] as unknown as QuestionType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return data[0] as any;
 }

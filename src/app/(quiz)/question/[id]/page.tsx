@@ -7,8 +7,8 @@ export default async function QuestionContentPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id: questionId } = await params;
-  const question = await getQuestion(questionId);
+  const { id: questionPublicId } = await params;
+  const question = await getQuestion(questionPublicId);
 
   if (!question) {
     notFound();
