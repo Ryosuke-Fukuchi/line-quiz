@@ -92,7 +92,7 @@ export const QuestionSortContent: React.FC<PropsType> = ({
         ? null
         : (quiz.question_set.find(
             (q) => q.question_number === questionNumber + 1
-          )?.id as number),
+          )?.public_id as string),
       status: isLastQuestion ? PLAYER_STATUS.done : PLAYER_STATUS.playing,
       playeranswer: answerPayload,
     };

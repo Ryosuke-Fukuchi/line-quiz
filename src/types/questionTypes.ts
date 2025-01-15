@@ -25,12 +25,13 @@ export type QuestionSortType = {
 
 export type QuestionType = {
   id: number;
+  public_id: string;
   content: string;
   question_type: string;
   question_number: number;
   quiz: {
     id: number;
-    question_set: { id: number; question_number: number }[];
+    question_set: { public_id: string; question_number: number }[];
   };
   questionselect: QuestionSelectType | null;
   questionsort: QuestionSortType | null;

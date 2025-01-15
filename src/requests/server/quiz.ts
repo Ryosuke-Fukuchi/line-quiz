@@ -13,7 +13,7 @@ export async function getQuizByPublicId(
       title,
       description,
       question_set:Question (
-        id,
+        public_id,
         question_number
       )
     `

@@ -9,13 +9,14 @@ export async function getQuestion(
     .select(
       `
           id,
+          public_id,
           content,
           question_type,
           question_number,
           quiz:Quiz (
             id,
             question_set:Question (
-              id,
+              public_id,
               question_number
             )
           ),
