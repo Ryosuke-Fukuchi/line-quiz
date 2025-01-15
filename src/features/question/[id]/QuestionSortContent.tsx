@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { createPlayerAnswer, patchPlayer } from "@/requests/client/player";
+import { patchPlayer } from "@/requests/client/player";
 import { PlayerType } from "@/types/playerTypes";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
@@ -94,10 +94,9 @@ export const QuestionSortContent: React.FC<PropsType> = ({
             (q) => q.question_number === questionNumber + 1
           )?.id as number),
       status: isLastQuestion ? PLAYER_STATUS.done : PLAYER_STATUS.playing,
+      playeranswer: answerPayload,
     };
 
-    // TODO: 入れ子更新が可能か
-    await createPlayerAnswer(player.id, answerPayload);
     await patchPlayer(player.id, playerPayload);
     await refetchPlayer?.();
 

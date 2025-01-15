@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
 import { QUESTION_TYPE } from "@/const.ts/question";
-import { createPlayerAnswer, patchPlayer } from "@/requests/client/player";
+import { patchPlayer } from "@/requests/client/player";
 import { PLAYER_STATUS } from "@/const.ts/player";
 import { SpinLoading } from "@/components/loading/SpinLoading";
 import { PlayerType } from "@/types/playerTypes";
@@ -92,10 +92,9 @@ export const QuestionSelectContent: React.FC<PropsType> = ({
             (q) => q.question_number === questionNumber + 1
           )?.id as number),
       status: isLastQuestion ? PLAYER_STATUS.done : PLAYER_STATUS.playing,
+      playeranswer: answerPayload,
     };
 
-    // TODO: 入れ子更新が可能か
-    await createPlayerAnswer(player.id, answerPayload);
     await patchPlayer(player.id, playerPayload);
     await refetchPlayer?.();
 

@@ -13,17 +13,6 @@ export async function getPlayer(userId: string): Promise<PlayerType | null> {
   return res.json();
 }
 
-export async function patchPlayer(
-  playerId: number,
-  player: Partial<PlayerType>
-) {
-  await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/player/${playerId}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(player),
-  });
-}
-
 export async function createPlayer(
   player: Omit<
     PlayerType,
@@ -37,13 +26,15 @@ export async function createPlayer(
   });
 }
 
-export async function createPlayerAnswer(
+export async function patchPlayer(
   playerId: number,
-  answer: Omit<PlayerAnswerType, "id" | "player_id">
+  player: Partial<PlayerType> & {
+    playeranswer?: Omit<PlayerAnswerType, "id" | "player_id">;
+  }
 ) {
-  await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/player/${playerId}/answer`, {
-    method: "POST",
+  await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/player/${playerId}`, {
+    method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(answer),
+    body: JSON.stringify(player),
   });
 }
