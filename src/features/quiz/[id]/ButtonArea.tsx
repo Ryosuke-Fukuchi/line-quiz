@@ -11,6 +11,7 @@ type PropsType = {
   quiz: QuizType;
 };
 
+// クイズ開始ボタン
 export const ButtonArea: React.FC<PropsType> = ({ quiz }) => {
   const {
     player,
