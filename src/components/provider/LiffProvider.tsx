@@ -57,6 +57,7 @@ export const LiffProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setProfile(profile);
       } catch (e) {
         console.error(e);
+        throw new Error("Error occurred while fetching profile");
       }
     }
   }, [liffState]);

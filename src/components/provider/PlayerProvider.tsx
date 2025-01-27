@@ -35,18 +35,18 @@ export const usePlayerContext = (): PlayerContextType => {
 };
 
 export const PlayerProvider: FC<{ children: ReactNode }> = ({ children }) => {
-  const { profile } = useLiffContext();
+  const { profile, liffState } = useLiffContext();
   const [player, setPlayer] = useState<PlayerType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   const searchPlayer = useCallback(async () => {
-    if (profile) {
+    if (liffState) {
       setLoading(true);
-      const player = await getPlayer(profile?.userId || "");
+      const player = await getPlayer(liffState?.getIDToken() || "");
       setPlayer(player);
       setLoading(false);
     }
-  }, [profile]);
+  }, [liffState]);
 
   const refetch = useCallback(async () => {
     searchPlayer();

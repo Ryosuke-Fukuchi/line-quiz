@@ -1,15 +1,17 @@
 import { PlayerAnswerType, PlayerType } from "@/types/playerTypes";
 
-export async function getPlayer(userId: string): Promise<PlayerType | null> {
+export async function getPlayer(idToken: string): Promise<PlayerType | null> {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_HOST}/api/player/` + userId,
+    `${process.env.NEXT_PUBLIC_HOST}/api/player/?t=` + idToken,
     {
       cache: "no-store",
     }
   );
+
   if (res.status === 404) {
     return null;
   }
+
   return res.json();
 }
 
