@@ -1,3 +1,4 @@
+import "server-only";
 import { supabase } from "@/utils/supabase";
 import { QuestionType } from "@/types/questionTypes";
 

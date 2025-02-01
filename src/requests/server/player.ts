@@ -1,3 +1,4 @@
+import "server-only";
 import { PlayerType } from "@/types/playerTypes";
 import { supabase } from "@/utils/supabase";
 
