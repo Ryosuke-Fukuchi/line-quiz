@@ -3,45 +3,38 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { createPlayer, patchPlayer } from "@/requests/client/player";
 import { PLAYER_STATUS } from "@/const.ts/player";
-import { usePlayerContext } from "@/components/provider/PlayerProvider";
 import { SpinLoading } from "@/components/loading/SpinLoading";
 import { QuizType } from "@/types/quizTypes";
+import { PlayerType } from "@/types/playerTypes";
 
 type PropsType = {
   quiz: QuizType;
+  player: PlayerType | null;
 };
 
 // クイズ開始ボタン
-export const ButtonArea: React.FC<PropsType> = ({ quiz }) => {
-  const {
-    player,
-    profile,
-    loading: playerLoading,
-    refetch: refetchPlayer,
-  } = usePlayerContext();
+export const ButtonArea: React.FC<PropsType> = ({ quiz, player }) => {
   const router = useRouter();
   const [loading, setLoading] = React.useState(false);
 
-  const buttonType = React.useMemo(() => {
-    if (!player) return { text: "クイズに参加する!", type: "join" };
-    return player.status === PLAYER_STATUS.playing
-      ? { text: `第${player?.question_number}問に進む!`, type: "restart" }
-      : { text: "結果を見る!", type: "confirm" };
-  }, [player]);
+  const buttonType: { text: string; type: "start" | "restart" | "confirm" } =
+    React.useMemo(() => {
+      if (!player) return { text: "クイズに参加する!", type: "start" };
+      return player.status === PLAYER_STATUS.playing
+        ? { text: `第${player?.question_number}問に進む!`, type: "restart" }
+        : { text: "結果を見る!", type: "confirm" };
+    }, [player]);
 
-  const handleJoin = async () => {
+  const handleStart = async () => {
     setLoading(true);
     switch (buttonType.type) {
-      case "join":
+      case "start":
         await createPlayer({
-          name: profile?.displayName as string,
-          user_id: profile?.userId as string,
           quiz_id: quiz.id,
           next_question_id: quiz.question_set.find(
             (q) => q.question_number === 1
           )?.public_id as string,
         });
-        await refetchPlayer?.();
         router.push("/question");
         break;
       case "restart":
@@ -53,12 +46,9 @@ export const ButtonArea: React.FC<PropsType> = ({ quiz }) => {
             await patchPlayer(player?.id, {
               status: PLAYER_STATUS.result_confirmed,
             });
-            await refetchPlayer?.();
             router.push(`/player_result/${player?.user_id}`);
           }
         }
-        break;
-      default:
         break;
     }
     setLoading(false);
@@ -69,14 +59,10 @@ export const ButtonArea: React.FC<PropsType> = ({ quiz }) => {
       <button
         className="flex justify-center items-center border-2 border-emerald-700 text-white rounded-md bg-emerald-700 hover:border-emerald-700 hover:bg-white 
       hover:text-emerald-700 font-semibold text-xl tracking-wide shadow-md shadow-emerald-900/40 active:shadow-none py-2 px-6"
-        onClick={handleJoin}
-        disabled={loading || playerLoading}
+        onClick={handleStart}
+        disabled={loading}
       >
-        {loading || playerLoading ? (
-          <SpinLoading text="Loading" />
-        ) : (
-          buttonType.text
-        )}
+        {loading ? <SpinLoading text="Loading" /> : buttonType.text}
       </button>
     </>
   );

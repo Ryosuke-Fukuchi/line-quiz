@@ -69,6 +69,8 @@ export async function POST(request: Request) {
       );
     }
 
+    // TODO: LINEユーザーの検証
+
     await supabase.from("Player").insert(body);
 
     return NextResponse.json({ message: "success" }, { status: 200 });
