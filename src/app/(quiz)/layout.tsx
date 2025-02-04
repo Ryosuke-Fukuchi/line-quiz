@@ -1,14 +1,7 @@
-import { LiffProvider } from "@/components/provider/LiffProvider";
-import { PlayerProvider } from "@/components/provider/PlayerProvider";
-
-export default function TestLayout({
+export default function QuizLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <LiffProvider>
-      <PlayerProvider>{children}</PlayerProvider>
-    </LiffProvider>
-  );
+  return <>{children}</>;
 }
