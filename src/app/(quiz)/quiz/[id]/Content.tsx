@@ -4,7 +4,7 @@ import { useAuthPlayer } from "@/hooks/useAuthPlayer";
 import { QuizType } from "@/types/quizTypes";
 
 export const QuizContent: React.FC<{ quiz: QuizType }> = ({ quiz }) => {
-  const { player, error, loading } = useAuthPlayer();
+  const { player, error, loading } = useAuthPlayer(quiz);
 
   if (loading) {
     return <div>Loading...</div>;

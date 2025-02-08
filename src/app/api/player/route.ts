@@ -1,21 +1,30 @@
 import { supabase } from "@/utils/supabase";
 import { verifyLineUser } from "@/utils/verifyLineUser";
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
-    const token = searchParams.get("t");
+    const quizId = searchParams.get("q");
 
-    if (!token) {
+    if (!quizId) {
       return NextResponse.json(
-        { error: "token is required." },
+        { error: "quizId is required." },
         { status: 400 } // Bad Request
       );
     }
 
     // LINEユーザーの検証
-    const verifyResponse = await verifyLineUser(token);
+    const cookieStore = await cookies();
+    const token = cookieStore.get("liffToken");
+    if (!token) {
+      return NextResponse.json(
+        { error: "LIFF Token is not set." },
+        { status: 401 } // Bad Request
+      );
+    }
+    const verifyResponse = await verifyLineUser(token.value);
 
     if (!verifyResponse.ok) {
       return NextResponse.json(
@@ -31,10 +40,11 @@ export async function GET(req: Request) {
       .from("Player")
       .select(
         `
-      *,
-      playeranswer_set:PlayerAnswer(*)
-    `
+          *,
+          playeranswer_set:PlayerAnswer(*)
+        `
       )
+      .eq("quiz_id", quizId)
       .eq("user_id", userId);
 
     if (error || !data) {

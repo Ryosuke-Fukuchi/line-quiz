@@ -1,10 +1,10 @@
 import { PlayerAnswerType, PlayerType } from "@/types/playerTypes";
 
 export async function getPlayer(
-  idToken: string
+  quizId: number
 ): Promise<{ player: PlayerType | null; success: boolean }> {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_HOST}/api/player/?t=` + idToken,
+    `${process.env.NEXT_PUBLIC_HOST}/api/player/?q=` + quizId,
     {
       cache: "no-store",
     }
