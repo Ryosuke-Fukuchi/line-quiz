@@ -1,50 +1,33 @@
 "use client";
+
 import React from "react";
-import { patchPlayer } from "@/requests/client/player";
-import { PlayerType } from "@/types/playerTypes";
-import { useRouter } from "next/navigation";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
 import { QUESTION_TYPE } from "@/const.ts/question";
-import { PLAYER_STATUS } from "@/const.ts/player";
 import { SpinLoading } from "@/components/loading/SpinLoading";
 import { QuestionSortType, QuestionType } from "@/types/questionTypes";
+import { answer } from "@/requests/client/answer";
 
 type ChoiceType = { pk: number; value: string; correct_sort_order: number };
 
 type PropsType = {
-  questionId: number;
-  questionNumber: number;
-  question: QuestionSortType;
-  quiz: QuestionType["quiz"];
-  player: PlayerType;
-  refetchPlayer?: () => Promise<void>;
-  isLastQuestion: boolean;
-  isDone: boolean;
+  question: QuestionType;
+  questionSort: QuestionSortType;
 };
 
 export const QuestionSortContent: React.FC<PropsType> = ({
-  questionId,
-  questionNumber,
   question,
-  quiz,
-  player,
-  refetchPlayer,
-  isLastQuestion,
-  isDone,
+  questionSort,
 }) => {
-  const buttonText = isDone ? "回答済み" : "回答する";
-
   const choices = React.useMemo(
     () =>
-      question.questionsortchoice_set
+      questionSort.questionsortchoice_set
         .map((choice) => ({ ...choice, pk: choice.id, value: choice.content }))
         .sort((a, b) => a.display_sort_order - b.display_sort_order),
-    [question]
+    [questionSort]
   );
 
   const [selected, setClicked] = React.useState<ChoiceType[]>([]);
-  const router = useRouter();
 
   const selectChoice = (selected: ChoiceType) => {
     setClicked((current) => {
@@ -73,35 +56,18 @@ export const QuestionSortContent: React.FC<PropsType> = ({
     const isPerfect = correctCounts === choices.length;
     // 獲得ポイント
     const earnedPoints =
-      question.answer_points * correctCounts +
-      (isPerfect ? question.additional_points : 0);
+      questionSort.answer_points * correctCounts +
+      (isPerfect ? questionSort.additional_points : 0);
 
-    const answerPayload = {
+    const playeranswer = {
       content: JSON.stringify(selectedValues),
       question_type: QUESTION_TYPE.sort,
       earned_points: earnedPoints,
-      question_number: questionNumber,
-      question_id: questionId,
+      question_number: question.question_number,
+      question_id: question.id,
     };
 
-    const playerPayload = {
-      id: player.id,
-      earned_points: player.earned_points + earnedPoints,
-      question_number: questionNumber + 1,
-      next_question_id: isLastQuestion
-        ? null
-        : (quiz.question_set.find(
-            (q) => q.question_number === questionNumber + 1
-          )?.public_id as string),
-      status: isLastQuestion ? PLAYER_STATUS.done : PLAYER_STATUS.playing,
-      playeranswer: answerPayload,
-    };
-
-    await patchPlayer(player.id, playerPayload);
-    await refetchPlayer?.();
-
-    // /questionに遷移
-    router.push("/question");
+    await answer({ question, playeranswer });
     setLoading(false);
   };
 
@@ -139,14 +105,13 @@ export const QuestionSortContent: React.FC<PropsType> = ({
             "border-2 border-zinc-300 bg-zinc-200 text-zinc-400 rounded text-lg tracking-wide py-2 px-6",
             clsx(
               selected.length === choices.length &&
-                !isDone &&
                 "font-semibold border-emerald-700 text-white bg-emerald-700 hover:border-emerald-700 hover:bg-white hover:text-emerald-700 shadow-md shadow-emerald-900/40 active:shadow-none"
             )
           )}
-          disabled={selected.length !== choices.length || loading || isDone}
+          disabled={selected.length !== choices.length || loading}
           onClick={handleAnswer}
         >
-          {loading ? <SpinLoading text="Loading" /> : buttonText}
+          {loading ? <SpinLoading text="Loading" /> : "回答する"}
         </button>
       </div>
     </div>

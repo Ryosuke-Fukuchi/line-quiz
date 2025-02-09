@@ -14,9 +14,6 @@ export default async function QuestionContentPage({
     notFound();
   }
 
-  const isLastQuestion =
-    question?.question_number === question.quiz.question_set.length;
-
   return (
     <main className="min-h-screen px-8 py-4 pb-20 flex flex-col">
       <div className="p-1">
@@ -24,7 +21,7 @@ export default async function QuestionContentPage({
           第{question.question_number}問!
         </h3>
       </div>
-      <QuestionContent question={question} isLastQuestion={isLastQuestion} />
+      <QuestionContent question={question} />
     </main>
   );
 }

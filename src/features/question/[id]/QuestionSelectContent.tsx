@@ -1,50 +1,32 @@
 "use client";
 import React from "react";
-import { useRouter } from "next/navigation";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
 import { QUESTION_TYPE } from "@/const.ts/question";
-import { patchPlayer } from "@/requests/client/player";
-import { PLAYER_STATUS } from "@/const.ts/player";
 import { SpinLoading } from "@/components/loading/SpinLoading";
-import { PlayerType } from "@/types/playerTypes";
 import { QuestionSelectType, QuestionType } from "@/types/questionTypes";
+import { answer } from "@/requests/client/answer";
 
 type ChoiceType = { pk: number; value: string; is_answer: boolean };
 
 type PropsType = {
-  questionId: number;
-  questionNumber: number;
-  question: QuestionSelectType;
-  quiz: QuestionType["quiz"];
-  player: PlayerType;
-  refetchPlayer?: () => Promise<void>;
-  isLastQuestion: boolean;
-  isDone: boolean;
+  question: QuestionType;
+  questionSelect: QuestionSelectType;
 };
 
 export const QuestionSelectContent: React.FC<PropsType> = ({
-  questionId,
-  questionNumber,
   question,
-  quiz,
-  player,
-  refetchPlayer,
-  isLastQuestion,
-  isDone,
+  questionSelect,
 }) => {
-  const buttonText = isDone ? "回答済み" : "回答する";
-
   const choices = React.useMemo(
     () =>
-      question.questionselectchoice_set
+      questionSelect.questionselectchoice_set
         .map((choice) => ({ ...choice, pk: choice.id, value: choice.content }))
         .sort((a, b) => a.sort_order - b.sort_order),
-    [question]
+    [questionSelect]
   );
 
   const [selected, setClicked] = React.useState<ChoiceType[]>([]);
-  const router = useRouter();
 
   const selectChoice = (selected: ChoiceType) => {
     setClicked((current) => {
@@ -52,7 +34,7 @@ export const QuestionSelectContent: React.FC<PropsType> = ({
         return current.filter((item) => selected.pk !== item.pk);
       }
 
-      if (current.length === question.select_counts) {
+      if (current.length === questionSelect.select_counts) {
         return [...[...current].slice(1), selected];
       }
 
@@ -68,38 +50,22 @@ export const QuestionSelectContent: React.FC<PropsType> = ({
     // 正解数
     const correctCounts = selected.filter((item) => item.is_answer).length;
     // 全問正解かどうか
-    const isPerfect = correctCounts === question.select_counts;
+    const isPerfect = correctCounts === questionSelect.select_counts;
     // 獲得ポイント
     const earnedPoints =
-      question.answer_points * correctCounts +
-      (isPerfect ? question.additional_points : 0);
+      questionSelect.answer_points * correctCounts +
+      (isPerfect ? questionSelect.additional_points : 0);
 
-    const answerPayload = {
+    const playeranswer = {
       content: JSON.stringify(selectedValues),
       question_type: QUESTION_TYPE.select,
       earned_points: earnedPoints,
-      question_number: questionNumber,
-      question_id: questionId,
+      question_number: question.question_number,
+      question_id: question.id,
     };
 
-    const playerPayload = {
-      id: player.id,
-      earned_points: player.earned_points + earnedPoints,
-      question_number: questionNumber + 1,
-      next_question_id: isLastQuestion
-        ? null
-        : (quiz.question_set.find(
-            (q) => q.question_number === questionNumber + 1
-          )?.public_id as string),
-      status: isLastQuestion ? PLAYER_STATUS.done : PLAYER_STATUS.playing,
-      playeranswer: answerPayload,
-    };
+    await answer({ question, playeranswer });
 
-    await patchPlayer(player.id, playerPayload);
-    await refetchPlayer?.();
-
-    // /questionに遷移
-    router.push("/question");
     setLoading(false);
   };
 
@@ -157,17 +123,14 @@ export const QuestionSelectContent: React.FC<PropsType> = ({
           className={twMerge(
             "border-2 border-zinc-300 bg-zinc-200 text-zinc-400 rounded text-lg tracking-wide py-2 px-6",
             clsx(
-              selected.length === question.select_counts &&
-                !isDone &&
+              selected.length === questionSelect.select_counts &&
                 "font-semibold border-emerald-700 text-white bg-emerald-700 hover:border-emerald-700 hover:bg-white hover:text-emerald-700 shadow-md shadow-emerald-900/40 active:shadow-none"
             )
           )}
-          disabled={
-            selected.length !== question.select_counts || loading || isDone
-          }
+          disabled={selected.length !== questionSelect.select_counts || loading}
           onClick={handleAnswer}
         >
-          {loading ? <SpinLoading text="Loading" /> : buttonText}
+          {loading ? <SpinLoading text="Loading" /> : "回答する"}
         </button>
       </div>
     </div>
