@@ -1,5 +1,5 @@
-import { ButtonArea } from "@/features/player_result/[id]/ButtonArea";
 import { getPlayer } from "./getPlayer";
+import { ButtonArea } from "./ButtonArea";
 
 export default async function ResultPage({
   params,
