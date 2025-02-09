@@ -1,7 +1,7 @@
 "use client";
 
 import { ButtonArea } from "./ButtonArea";
-import { useAuthPlayer } from "@/hooks/useAuthPlayer";
+import { useAuthPlayer } from "./useAuthPlayer";
 import { QuizType } from "@/types/quizTypes";
 
 export const QuizContent: React.FC<{ quiz: QuizType }> = ({ quiz }) => {
