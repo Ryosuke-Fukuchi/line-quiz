@@ -16,31 +16,27 @@ export async function answer({
   question: QuestionType;
   playeranswer: Omit<PlayerAnswerType, "id" | "player_id">;
 }) {
-  try {
-    // LINEユーザーの検証
-    const { userId } = await validateUser();
+  // LINEユーザーの検証
+  const { userId } = await validateUser();
 
-    // playerの検索
-    const player = await fetchUser(question.quiz.id, userId);
+  // playerの検索
+  const player = await fetchUser(question.quiz.id, userId);
 
-    // question_numberのバリデーション
-    if (player.status === PLAYER_STATUS.done) {
-      return { success: false, message: "既に回答済みです" };
-    }
-    if (player.question_number !== question.question_number) {
-      return { success: false, message: "既に回答済みです" };
-    }
-
-    // playerの更新
-    await updatePlayer({ player, question, playeranswer });
-
-    // playeranswerの作成
-    await createPlayerAnswer(player.id, playeranswer);
-
-    return { success: true };
-  } catch {
-    throw new Error("Internal Server Error. Something went wrong.");
+  // question_numberのバリデーション
+  if (player.status === PLAYER_STATUS.done) {
+    return { success: false, message: "既に回答済みです" };
   }
+  if (player.question_number !== question.question_number) {
+    return { success: false, message: "既に回答済みです" };
+  }
+
+  // playerの更新
+  await updatePlayer({ player, question, playeranswer });
+
+  // playeranswerの作成
+  await createPlayerAnswer(player.id, playeranswer);
+
+  return { success: true };
 }
 
 async function validateUser() {
