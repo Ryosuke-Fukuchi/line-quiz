@@ -1,5 +1,6 @@
 "use client";
-import { ButtonArea } from "@/features/quiz/[id]/ButtonArea";
+
+import { ButtonArea } from "./ButtonArea";
 import { useAuthPlayer } from "@/hooks/useAuthPlayer";
 import { QuizType } from "@/types/quizTypes";
 

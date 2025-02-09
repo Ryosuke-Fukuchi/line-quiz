@@ -12,6 +12,7 @@ export type PlayerType = {
   id: number;
   name: string;
   user_id: string;
+  public_id: string;
   status: string;
   earned_points: number;
   question_number: number;
