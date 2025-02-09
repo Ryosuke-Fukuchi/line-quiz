@@ -1,4 +1,4 @@
-import { QuestionContent } from "@/features/question/[id]/QuestionContent";
+import { QuestionContent } from "./QuestionContent";
 import { getQuestion } from "@/requests/server/question";
 import { notFound } from "next/navigation";
 
