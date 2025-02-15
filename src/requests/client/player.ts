@@ -4,7 +4,7 @@ export async function getPlayer(
   quizId: number
 ): Promise<{ player: PlayerType | null; success: boolean }> {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_HOST}/api/player/?q=` + quizId,
+    `${process.env.NEXT_PUBLIC_HOST}/api/player?q=` + quizId,
     {
       cache: "no-store",
     }

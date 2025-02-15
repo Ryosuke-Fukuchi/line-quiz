@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import liff from "@line/liff";
 import { PlayerType } from "@/types/playerTypes";
 import { getPlayer } from "@/requests/client/player";
@@ -12,7 +12,7 @@ export function useAuthPlayer(quiz: QuizType) {
   const [loading, setLoading] = useState<boolean>(true);
 
   // LIFFの初期化
-  const liffInit = useCallback(async () => {
+  const liffInit = async () => {
     if (process.env.NEXT_PUBLIC_LIFF_MOCK_MODE === "true") {
       // モックモードの設定
       liff.use(new LiffMockPlugin());
@@ -37,39 +37,40 @@ export function useAuthPlayer(quiz: QuizType) {
         setError(true); // エラー時にエラーメッセージをセット
       }
     );
-  }, []);
+  };
 
   // IDトークンをCookieにセット
-  const setTokenCookie = useCallback(async () => {
+  const setTokenCookie = async () => {
     if (error) return;
 
     const liffToken = liff.getIDToken();
     if (liffToken) {
       await setCookies({ liffToken });
     }
-  }, [error]);
+  };
 
   // プレイヤーの検索
-  const searchPlayer = useCallback(async () => {
+  const searchPlayer = async () => {
     if (error) return;
 
     const { player, success } = await getPlayer(quiz.id);
     setPlayer(player);
     setError(!success);
-  }, [error, quiz]);
+  };
 
-  const initialization = useCallback(async () => {
+  const initialization = async () => {
     setLoading(true);
     await liffInit();
     await setTokenCookie();
     await searchPlayer();
     setLoading(false);
-  }, [liffInit, setTokenCookie, searchPlayer]);
+  };
 
   // 初回処理
   useEffect(() => {
     initialization();
-  }, [initialization]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return { player, loading, error };
 }
