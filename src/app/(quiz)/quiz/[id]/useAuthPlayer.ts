@@ -4,6 +4,7 @@ import { PlayerType } from "@/types/playerTypes";
 import { getPlayer } from "@/requests/client/player";
 import { setCookies } from "@/utils/setCookies";
 import { QuizType } from "@/types/quizTypes";
+import { LiffMockPlugin } from "@line/liff-mock";
 
 export function useAuthPlayer(quiz: QuizType) {
   const [error, setError] = useState(false); // TODO: エラーの種別を追加
@@ -12,9 +13,26 @@ export function useAuthPlayer(quiz: QuizType) {
 
   // LIFFの初期化
   const liffInit = useCallback(async () => {
+    if (process.env.NEXT_PUBLIC_LIFF_MOCK_MODE === "true") {
+      // モックモードの設定
+      liff.use(new LiffMockPlugin());
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (liff as any).$mock.set((p: any) => ({
+        ...p,
+        getProfile: { displayName: "テスト太郎", userId: "xxxxxxxxx" },
+        getIDToken: "token-xyz",
+      }));
+    }
+
     await liff.init(
-      { liffId: process.env.NEXT_PUBLIC_LIFF_ID || "" },
-      () => {},
+      {
+        liffId: process.env.NEXT_PUBLIC_LIFF_ID || "",
+        mock: process.env.NEXT_PUBLIC_LIFF_MOCK_MODE === "true",
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any,
+      () => {
+        if (!liff.isInClient()) liff.login();
+      },
       () => {
         setError(true); // エラー時にエラーメッセージをセット
       }
