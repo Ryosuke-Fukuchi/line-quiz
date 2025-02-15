@@ -12,9 +12,5 @@ export default async function QuizPage({
   if (!quiz) {
     notFound();
   }
-  return (
-    <main className="min-h-screen p-8 pb-20 flex flex-col items-center">
-      <QuizContent quiz={quiz} />
-    </main>
-  );
+  return <QuizContent quiz={quiz} />;
 }

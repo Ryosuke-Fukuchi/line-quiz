@@ -1,5 +1,6 @@
 "use server";
 
+import { PlayerType } from "@/types/playerTypes";
 import { supabase } from "@/utils/supabase";
 import { verifyLineUser } from "@/utils/verifyLineUser";
 import { cookies } from "next/headers";
@@ -12,14 +13,22 @@ export async function createPlayer(payload: {
   const { userId, name } = await validateUser();
 
   // playerの作成
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("Player")
-    .insert({ ...payload, user_id: userId, name });
+    .insert({ ...payload, user_id: userId, name })
+    .select(
+      `
+        *,
+        playeranswer_set:PlayerAnswer(*)
+      `
+    );
 
-  if (error) {
+  if (error || !data || !data[0]) {
     console.error("An error occured:", error);
     throw new Error("Internal Server Error");
   }
+
+  return data[0] as PlayerType;
 }
 
 async function validateUser() {
