@@ -18,8 +18,10 @@ export async function getPlayer(
     return { player: null, success: false };
   }
 
+  const data = await res.json();
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return { player: res.json() as any, success: true };
+  return { player: data, success: true };
 }
 
 export async function createPlayer(payload: {
