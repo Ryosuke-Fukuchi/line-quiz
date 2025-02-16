@@ -28,14 +28,14 @@ export async function answer({
 
   // question_numberのバリデーション
   if (player.status === PLAYER_STATUS.done) {
-    return { success: false, message: "既に回答済みです" };
+    return { player: null, message: "既に回答済みです" };
   }
   if (player.question_number !== question.question_number) {
-    return { success: false, message: "既に回答済みです" };
+    return { player: null, message: "既に回答済みです" };
   }
 
   // playerの更新
-  await updatePlayer({
+  const updatedPlayer = await updatePlayer({
     player,
     question,
     earnedPoints: playeranswer.earned_points,
@@ -50,7 +50,7 @@ export async function answer({
     question_type: question.question_type,
   });
 
-  return { success: true };
+  return { player: updatedPlayer, message: "" };
 }
 
 async function validateUser() {
@@ -119,15 +119,22 @@ async function updatePlayer({
   };
 
   // playerの更新
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("Player")
     .update({ ...playerPayload })
-    .eq("id", player.id);
+    .eq("id", player.id)
+    .select("*");
 
-  if (error) {
+  if (error || !data || !data[0]) {
     console.error("Error occurred:", error);
     throw new Error("Update Player Failed. Something went wrong.");
   }
+
+  return data[0] as {
+    public_id: string;
+    status: string;
+    next_question_id: string | null;
+  };
 }
 
 async function createPlayerAnswer(playeranswer: Omit<PlayerAnswerType, "id">) {
