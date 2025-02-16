@@ -20,3 +20,8 @@ export type PlayerType = {
   next_question_id: string | null;
   playeranswer_set: PlayerAnswerType[];
 };
+
+export type PlayerAnswerPayloadType = {
+  content: string;
+  earned_points: number;
+};

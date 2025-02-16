@@ -1,8 +1,8 @@
-import { QuestionContent } from "./QuestionContent";
+import { QuestionMainContent } from "./Content";
 import { getQuestion } from "@/requests/server/question";
 import { notFound } from "next/navigation";
 
-export default async function QuestionContentPage({
+export default async function QuestionPage({
   params,
 }: {
   params: Promise<{ id: string }>;
@@ -14,14 +14,5 @@ export default async function QuestionContentPage({
     notFound();
   }
 
-  return (
-    <main className="min-h-screen px-8 py-4 pb-20 flex flex-col">
-      <div className="p-1">
-        <h3 className="text-lg font-semibold text-neutral-700 text-center">
-          第{question.question_number}問!
-        </h3>
-      </div>
-      <QuestionContent question={question} />
-    </main>
-  );
+  return <QuestionMainContent question={question} />;
 }

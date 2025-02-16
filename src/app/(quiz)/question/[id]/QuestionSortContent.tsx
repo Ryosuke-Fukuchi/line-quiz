@@ -1,31 +1,53 @@
 "use client";
 
 import React from "react";
-import clsx from "clsx";
-import { twMerge } from "tailwind-merge";
-import { QUESTION_TYPE } from "@/const.ts/question";
 import { SpinLoading } from "@/components/loading/SpinLoading";
-import { QuestionSortType, QuestionType } from "@/types/questionTypes";
-import { answer } from "@/requests/client/answer";
+import { QuestionSortType } from "@/types/questionTypes";
+import { PlayerAnswerPayloadType } from "@/types/playerTypes";
+import { tv } from "tailwind-variants";
+
+const buttonStyle = tv({
+  base: "border-2 border-zinc-300 bg-zinc-200 text-zinc-400 rounded text-lg tracking-wide py-2 px-6",
+  variants: {
+    ready: {
+      true: "font-semibold border-emerald-700 text-white bg-emerald-700 hover:border-emerald-700 hover:bg-white hover:text-emerald-700 shadow-md shadow-emerald-900/40 active:shadow-none",
+    },
+  },
+});
+
+const choiceStyle = tv({
+  base: "text-lg size-20 box-border border border-teal-600 bg-green-50 rounded-md p-2",
+  variants: {
+    selected: {
+      true: "border-3 bg-green-100 font-semibold",
+    },
+  },
+});
+
+const selectedIconStyle = tv({
+  base: "text-sm font-semibold size-8 border-2 border-teal-900 bg-white -top-2 -left-2 rounded-full flex justify-center items-center",
+  variants: {
+    show: {
+      true: "absolute",
+      false: "hidden",
+    },
+  },
+});
 
 type ChoiceType = { pk: number; value: string; correct_sort_order: number };
 
 type PropsType = {
-  question: QuestionType;
   questionSort: QuestionSortType;
+  createAnswer: (playeranswer: PlayerAnswerPayloadType) => Promise<void>;
 };
 
 export const QuestionSortContent: React.FC<PropsType> = ({
-  question,
   questionSort,
+  createAnswer,
 }) => {
-  const choices = React.useMemo(
-    () =>
-      questionSort.questionsortchoice_set
-        .map((choice) => ({ ...choice, pk: choice.id, value: choice.content }))
-        .sort((a, b) => a.display_sort_order - b.display_sort_order),
-    [questionSort]
-  );
+  const choices = questionSort.questionsortchoice_set
+    .map((choice) => ({ ...choice, pk: choice.id, value: choice.content }))
+    .sort((a, b) => a.display_sort_order - b.display_sort_order);
 
   const [selected, setClicked] = React.useState<ChoiceType[]>([]);
 
@@ -61,13 +83,10 @@ export const QuestionSortContent: React.FC<PropsType> = ({
 
     const playeranswer = {
       content: JSON.stringify(selectedValues),
-      question_type: QUESTION_TYPE.sort,
       earned_points: earnedPoints,
-      question_number: question.question_number,
-      question_id: question.id,
     };
 
-    await answer({ question, playeranswer });
+    await createAnswer(playeranswer);
     setLoading(false);
   };
 
@@ -76,20 +95,20 @@ export const QuestionSortContent: React.FC<PropsType> = ({
       <div className="py-4 grid grid-cols-3 gap-3 w-fit">
         {choices.map((choice) => (
           <div key={choice.pk.toString()} className="relative">
-            {selected.findIndex((item) => item.pk === choice.pk) >= 0 && (
-              <div className="absolute text-sm font-semibold size-8 border-2 border-teal-900 bg-white -top-2 -left-2 rounded-full flex justify-center items-center">
-                {selected.findIndex((item) => item.pk === choice.pk) + 1}
-              </div>
-            )}
+            {/* 選択順表示アイコン */}
+            <div
+              className={selectedIconStyle({
+                show: selected.some((item) => item.pk === choice.pk),
+              })}
+            >
+              {selected.findIndex((item) => item.pk === choice.pk) + 1}
+            </div>
+            {/* 選択肢 */}
             <button
               type="button"
-              className={twMerge(
-                "text-lg size-20 box-border border border-teal-600 bg-green-50 rounded-md p-2",
-                clsx(
-                  selected.find((item) => choice.pk === item.pk) &&
-                    "border-3 bg-green-100 font-semibold"
-                )
-              )}
+              className={choiceStyle({
+                selected: selected.some((item) => choice.pk === item.pk),
+              })}
               onClick={() => {
                 selectChoice(choice);
               }}
@@ -101,13 +120,7 @@ export const QuestionSortContent: React.FC<PropsType> = ({
       </div>
       <div className="flex justify-center py-6">
         <button
-          className={twMerge(
-            "border-2 border-zinc-300 bg-zinc-200 text-zinc-400 rounded text-lg tracking-wide py-2 px-6",
-            clsx(
-              selected.length === choices.length &&
-                "font-semibold border-emerald-700 text-white bg-emerald-700 hover:border-emerald-700 hover:bg-white hover:text-emerald-700 shadow-md shadow-emerald-900/40 active:shadow-none"
-            )
-          )}
+          className={buttonStyle({ ready: selected.length === choices.length })}
           disabled={selected.length !== choices.length || loading}
           onClick={handleAnswer}
         >

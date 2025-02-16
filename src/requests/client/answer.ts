@@ -1,7 +1,11 @@
 "use server";
 
 import { PLAYER_STATUS } from "@/const.ts/player";
-import { PlayerAnswerType, PlayerType } from "@/types/playerTypes";
+import {
+  PlayerAnswerPayloadType,
+  PlayerAnswerType,
+  PlayerType,
+} from "@/types/playerTypes";
 import { QuestionType } from "@/types/questionTypes";
 import { supabase } from "@/utils/supabase";
 import { verifyLineUser } from "@/utils/verifyLineUser";
@@ -14,7 +18,7 @@ export async function answer({
   playeranswer,
 }: {
   question: QuestionType;
-  playeranswer: Omit<PlayerAnswerType, "id" | "player_id">;
+  playeranswer: PlayerAnswerPayloadType;
 }) {
   // LINEユーザーの検証
   const { userId } = await validateUser();
@@ -31,10 +35,20 @@ export async function answer({
   }
 
   // playerの更新
-  await updatePlayer({ player, question, playeranswer });
+  await updatePlayer({
+    player,
+    question,
+    earnedPoints: playeranswer.earned_points,
+  });
 
   // playeranswerの作成
-  await createPlayerAnswer(player.id, playeranswer);
+  await createPlayerAnswer({
+    ...playeranswer,
+    player_id: player.id,
+    question_id: question.id,
+    question_number: question.question_number,
+    question_type: question.question_type,
+  });
 
   return { success: true };
 }
@@ -78,14 +92,12 @@ async function fetchUser(quizId: number, userId: string) {
 async function updatePlayer({
   player,
   question,
-  playeranswer,
+  earnedPoints,
 }: {
   player: Omit<PlayerType, "playeranswer_set">;
   question: QuestionType;
-  playeranswer: Omit<PlayerAnswerType, "id" | "player_id">;
+  earnedPoints: number;
 }) {
-  const earnedPoints = playeranswer.earned_points;
-
   const isLastQuestion =
     question?.question_number === question.quiz.question_set.length;
 
@@ -118,13 +130,10 @@ async function updatePlayer({
   }
 }
 
-async function createPlayerAnswer(
-  playerId: number,
-  playeranswer: Omit<PlayerAnswerType, "id" | "player_id">
-) {
+async function createPlayerAnswer(playeranswer: Omit<PlayerAnswerType, "id">) {
   const { error } = await supabase
     .from("PlayerAnswer")
-    .insert({ ...playeranswer, player_id: playerId });
+    .insert({ ...playeranswer });
 
   if (error) {
     console.error("Error occurred:", error);
