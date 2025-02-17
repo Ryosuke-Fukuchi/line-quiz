@@ -13,6 +13,7 @@ import { answer } from "@/requests/client/answer";
 import { PlayerAnswerPayloadType } from "@/types/playerTypes";
 import { PLAYER_STATUS } from "@/const.ts/player";
 import { AnswerSuccessView } from "./SuccessView";
+import { AnswerFailView } from "./FailView";
 
 export const QuestionMainContent: React.FC<{
   question: QuestionType;
@@ -25,22 +26,48 @@ export const QuestionMainContent: React.FC<{
     allAnswered: boolean;
   } | null>(null);
 
+  const [errorState, setErrorState] = useState<{
+    message: string;
+    playerPublicId: string;
+    questionNumber: number;
+    nextQuestionPublicId: string;
+    allAnswered: boolean;
+  } | null>(null);
+
   const createAnswer = async (playeranswer: PlayerAnswerPayloadType) => {
-    const { player } = await answer({ question, playeranswer });
-    if (player) {
+    const { success, player, message } = await answer({
+      question,
+      playeranswer,
+    });
+
+    if (success) {
       setAnswerState({
         playerPublicId: player.public_id,
-        questionNumber: question.question_number,
-        nextQuestionPublicId: player.next_question_id || "",
+        questionNumber: player.question_number,
+        nextQuestionPublicId: player.next_question_id,
         answerContent: playeranswer.content,
         allAnswered: player.status === PLAYER_STATUS.done,
+      });
+    } else {
+      setErrorState({
+        playerPublicId: player.public_id,
+        questionNumber: player.question_number,
+        nextQuestionPublicId: player.next_question_id,
+        allAnswered: player.status === PLAYER_STATUS.done,
+        message,
       });
     }
   };
 
-  return answerState ? (
-    <AnswerSuccessView {...answerState} />
-  ) : (
+  if (errorState) {
+    return <AnswerFailView {...errorState} />;
+  }
+
+  if (answerState) {
+    return <AnswerSuccessView {...answerState} />;
+  }
+
+  return (
     <main className="min-h-screen px-8 py-4 pb-20 flex flex-col">
       <div className="p-1">
         <h3 className="text-lg font-semibold text-neutral-700 text-center">

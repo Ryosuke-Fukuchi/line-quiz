@@ -24,14 +24,32 @@ export async function answer({
   const { userId } = await validateUser();
 
   // playerの検索
-  const player = await fetchUser(question.quiz.id, userId);
+  const player = await fetchPlayer(question.quiz.id, userId);
 
   // question_numberのバリデーション
   if (player.status === PLAYER_STATUS.done) {
-    return { player: null, message: "既に回答済みです" };
+    return {
+      success: false,
+      player: {
+        public_id: player.public_id,
+        question_number: player.question_number,
+        next_question_id: player.next_question_id || "",
+        status: player.status,
+      },
+      message: "回答済みの問題です",
+    };
   }
   if (player.question_number !== question.question_number) {
-    return { player: null, message: "既に回答済みです" };
+    return {
+      success: false,
+      player: {
+        public_id: player.public_id,
+        question_number: player.question_number,
+        next_question_id: player.next_question_id || "",
+        status: player.status,
+      },
+      message: "回答済みの問題です",
+    };
   }
 
   // playerの更新
@@ -50,7 +68,16 @@ export async function answer({
     question_type: question.question_type,
   });
 
-  return { player: updatedPlayer, message: "" };
+  return {
+    success: true,
+    player: {
+      public_id: updatedPlayer.public_id,
+      question_number: updatedPlayer.question_number,
+      next_question_id: updatedPlayer.next_question_id || "",
+      status: updatedPlayer.status,
+    },
+    message: "",
+  };
 }
 
 async function validateUser() {
@@ -75,7 +102,7 @@ async function validateUser() {
   return { userId: userData.sub }; // LINEユーザーID
 }
 
-async function fetchUser(quizId: number, userId: string) {
+async function fetchPlayer(quizId: number, userId: string) {
   const { data, error } = await supabase
     .from("Player")
     .select("*")
@@ -86,7 +113,7 @@ async function fetchUser(quizId: number, userId: string) {
     notFound();
   }
 
-  return data[0];
+  return data[0] as Omit<PlayerType, "playeranswer_set">;
 }
 
 async function updatePlayer({
@@ -130,11 +157,7 @@ async function updatePlayer({
     throw new Error("Update Player Failed. Something went wrong.");
   }
 
-  return data[0] as {
-    public_id: string;
-    status: string;
-    next_question_id: string | null;
-  };
+  return data[0] as Omit<PlayerType, "playeranswer_set">;
 }
 
 async function createPlayerAnswer(playeranswer: Omit<PlayerAnswerType, "id">) {

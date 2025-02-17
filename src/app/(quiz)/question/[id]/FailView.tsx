@@ -5,37 +5,23 @@ import Link from "next/link";
 const buttonStyle =
   "border-2 border-emerald-700 text-white rounded-md bg-emerald-700 hover:border-emerald-700 hover:bg-white hover:text-emerald-700 font-semibold text-xl tracking-wide shadow-md shadow-emerald-900/40 active:shadow-none py-2 px-6";
 
-export const AnswerSuccessView: React.FC<{
+export const AnswerFailView: React.FC<{
+  message: string;
   playerPublicId: string;
   questionNumber: number;
   nextQuestionPublicId: string;
-  answerContent: string;
   allAnswered: boolean;
 }> = ({
+  message,
   playerPublicId,
   questionNumber,
   nextQuestionPublicId,
-  answerContent,
   allAnswered,
 }) => {
-  const answer = JSON.parse(answerContent || "[]") as string[];
-
   return (
     <main className="min-h-screen p-8 pb-20 flex flex-col items-center">
       <div className="p-1">
-        <>
-          <p className="text-neutral-700 text-center">
-            第{questionNumber}問<span className="text-sm ml-1">は</span>
-          </p>
-          <h3 className="text-2xl font-semibold text-neutral-700 text-center mt-2">
-            {answer.map((value, i) => (
-              <span key={i.toString()} className="mx-2">
-                {value}
-              </span>
-            ))}
-          </h3>
-          <p className="text-neutral-700 text-center mt-4">と回答しました。</p>
-        </>
+        <p className="text-neutral-700 text-center mt-4">{message}</p>
       </div>
       <div className="grow flex items-end py-6">
         {allAnswered ? (
