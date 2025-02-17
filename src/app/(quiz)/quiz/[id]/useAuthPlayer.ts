@@ -31,7 +31,7 @@ export function useAuthPlayer(quiz: QuizType) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any,
       () => {
-        if (!liff.isInClient()) liff.login();
+        if (!liff.isInClient() && !liff.isLoggedIn) liff.login();
       },
       () => {
         setError(true); // エラー時にエラーメッセージをセット
