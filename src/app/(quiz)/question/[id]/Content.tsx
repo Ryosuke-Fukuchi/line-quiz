@@ -14,6 +14,7 @@ import { PlayerAnswerPayloadType } from "@/types/playerTypes";
 import { PLAYER_STATUS } from "@/const.ts/player";
 import { AnswerSuccessView } from "./SuccessView";
 import { AnswerFailView } from "./FailView";
+import { motion, AnimatePresence } from "framer-motion";
 
 export const QuestionMainContent: React.FC<{
   question: QuestionType;
@@ -63,19 +64,26 @@ export const QuestionMainContent: React.FC<{
     return <AnswerFailView {...errorState} />;
   }
 
-  if (answerState) {
-    return <AnswerSuccessView {...answerState} />;
-  }
-
   return (
-    <main className="min-h-screen px-8 py-4 pb-20 flex flex-col">
-      <div className="p-1">
-        <h3 className="text-lg font-semibold text-neutral-700 text-center">
-          第{question.question_number}問!
-        </h3>
-      </div>
-      <QuestionContent question={question} createAnswer={createAnswer} />
-    </main>
+    <AnimatePresence mode="wait">
+      {answerState ? (
+        <AnswerSuccessView {...answerState} />
+      ) : (
+        <motion.div
+          key="question-content"
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          className="min-h-screen px-8 py-4 pb-20 flex flex-col"
+        >
+          <div className="p-1">
+            <h3 className="text-lg font-semibold text-neutral-700 text-center">
+              第{question.question_number}問!
+            </h3>
+          </div>
+          <QuestionContent question={question} createAnswer={createAnswer} />
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 

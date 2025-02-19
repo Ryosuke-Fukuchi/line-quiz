@@ -87,7 +87,6 @@ export const QuestionSortContent: React.FC<PropsType> = ({
     };
 
     await createAnswer(playeranswer);
-    setLoading(false);
   };
 
   return (

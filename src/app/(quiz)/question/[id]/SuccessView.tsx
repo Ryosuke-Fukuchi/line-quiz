@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 const buttonStyle =
   "border-2 border-emerald-700 text-white rounded-md bg-emerald-700 hover:border-emerald-700 hover:bg-white hover:text-emerald-700 font-semibold text-xl tracking-wide shadow-md shadow-emerald-900/40 active:shadow-none py-2 px-6";
@@ -21,7 +22,13 @@ export const AnswerSuccessView: React.FC<{
   const answer = JSON.parse(answerContent || "[]") as string[];
 
   return (
-    <main className="min-h-screen p-8 pb-20 flex flex-col items-center">
+    <motion.div
+      key="answer-success-view"
+      initial={{ x: "100%" }}
+      animate={{ x: 0 }}
+      transition={{ duration: 0.2, ease: "easeInOut" }}
+      className="min-h-screen px-8 py-4 pb-20 flex flex-col items-center"
+    >
       <div className="p-1">
         <>
           <p className="text-neutral-700 text-center">
@@ -50,6 +57,6 @@ export const AnswerSuccessView: React.FC<{
           </Link>
         )}
       </div>
-    </main>
+    </motion.div>
   );
 };

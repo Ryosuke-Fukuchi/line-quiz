@@ -14,5 +14,9 @@ export default async function QuestionPage({
     notFound();
   }
 
-  return <QuestionMainContent question={question} />;
+  return (
+    <main className="relative overflow-hidden">
+      <QuestionMainContent question={question} />
+    </main>
+  );
 }

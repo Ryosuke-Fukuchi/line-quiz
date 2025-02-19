@@ -80,8 +80,6 @@ export const QuestionSelectContent: React.FC<PropsType> = ({
     };
 
     await createAnswer(playeranswer);
-
-    setLoading(false);
   };
 
   return (
