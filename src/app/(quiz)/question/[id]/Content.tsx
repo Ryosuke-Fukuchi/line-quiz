@@ -15,6 +15,7 @@ import { PLAYER_STATUS } from "@/const.ts/player";
 import { AnswerSuccessView } from "./SuccessView";
 import { AnswerFailView } from "./FailView";
 import { motion, AnimatePresence } from "framer-motion";
+import { ScreenLoading } from "@/components/loading/ScreenLoading";
 
 export const QuestionMainContent: React.FC<{
   question: QuestionType;
@@ -35,7 +36,10 @@ export const QuestionMainContent: React.FC<{
     allAnswered: boolean;
   } | null>(null);
 
+  const [loading, setLoading] = useState(false);
+
   const createAnswer = async (playeranswer: PlayerAnswerPayloadType) => {
+    setLoading(true);
     const { success, player, message } = await answer({
       question,
       playeranswer,
@@ -58,6 +62,7 @@ export const QuestionMainContent: React.FC<{
         message,
       });
     }
+    setLoading(false);
   };
 
   if (errorState) {
@@ -65,25 +70,28 @@ export const QuestionMainContent: React.FC<{
   }
 
   return (
-    <AnimatePresence mode="wait">
-      {answerState ? (
-        <AnswerSuccessView {...answerState} />
-      ) : (
-        <motion.div
-          key="question-content"
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-          className="min-h-screen px-8 py-4 pb-20 flex flex-col"
-        >
-          <div className="p-1">
-            <h3 className="text-lg font-semibold text-neutral-700 text-center">
-              第{question.question_number}問!
-            </h3>
-          </div>
-          <QuestionContent question={question} createAnswer={createAnswer} />
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <>
+      {loading && <ScreenLoading />}
+      <AnimatePresence mode="wait">
+        {answerState ? (
+          <AnswerSuccessView {...answerState} />
+        ) : (
+          <motion.div
+            key="question-content"
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="min-h-screen px-8 py-4 pb-20 flex flex-col"
+          >
+            <div className="p-1">
+              <h3 className="text-lg font-semibold text-neutral-700 text-center">
+                第{question.question_number}問!
+              </h3>
+            </div>
+            <QuestionContent question={question} createAnswer={createAnswer} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 

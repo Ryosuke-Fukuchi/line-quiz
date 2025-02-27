@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { SpinLoading } from "@/components/loading/SpinLoading";
 import { QuestionSortType } from "@/types/questionTypes";
 import { PlayerAnswerPayloadType } from "@/types/playerTypes";
 import { tv } from "tailwind-variants";
@@ -50,6 +49,7 @@ export const QuestionSortContent: React.FC<PropsType> = ({
     .sort((a, b) => a.display_sort_order - b.display_sort_order);
 
   const [selected, setClicked] = React.useState<ChoiceType[]>([]);
+  const [answered, setAnswered] = React.useState(false);
 
   const selectChoice = (selected: ChoiceType) => {
     setClicked((current) => {
@@ -65,10 +65,9 @@ export const QuestionSortContent: React.FC<PropsType> = ({
     });
   };
 
-  const [loading, setLoading] = React.useState(false);
-
   const handleAnswer = async () => {
-    setLoading(true);
+    setAnswered(true);
+
     const selectedValues = selected.map((item) => item.value);
     // 正解数
     const correctCounts = selected.filter(
@@ -120,10 +119,10 @@ export const QuestionSortContent: React.FC<PropsType> = ({
       <div className="flex justify-center py-6">
         <button
           className={buttonStyle({ ready: selected.length === choices.length })}
-          disabled={selected.length !== choices.length || loading}
+          disabled={selected.length !== choices.length || answered}
           onClick={handleAnswer}
         >
-          {loading ? <SpinLoading text="Loading" /> : "回答する"}
+          回答する
         </button>
       </div>
     </div>
