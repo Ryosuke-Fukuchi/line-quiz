@@ -2,7 +2,6 @@
 
 import React from "react";
 import { PLAYER_STATUS } from "@/const.ts/player";
-import { SpinLoading } from "@/components/loading/SpinLoading";
 import { PlayerType } from "@/types/playerTypes";
 import Link from "next/link";
 import { cn } from "@/utils/cn";
@@ -26,7 +25,7 @@ export const ButtonArea: React.FC<PropsType> = ({ player, join, updating }) => {
         onClick={join}
         disabled={updating}
       >
-        {updating ? <SpinLoading text="Loading" /> : "クイズに参加する!"}
+        クイズに参加する!
       </button>
     );
   }

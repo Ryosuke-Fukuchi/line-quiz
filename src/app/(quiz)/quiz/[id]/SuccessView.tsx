@@ -10,7 +10,7 @@ export const JoinSuccessView: React.FC<{
   player: PlayerType;
 }> = ({ player }) => {
   return (
-    <main className="min-h-screen p-8 pb-20 flex flex-col items-center">
+    <>
       <div className="p-1">
         <p className="text-neutral-700 text-center">
           {player.name}
@@ -28,6 +28,6 @@ export const JoinSuccessView: React.FC<{
           <button className={buttonStyle}>第1問に進む</button>
         </Link>
       </div>
-    </main>
+    </>
   );
 };

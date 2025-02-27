@@ -7,6 +7,7 @@ import { QuizType } from "@/types/quizTypes";
 import { PlayerType } from "@/types/playerTypes";
 import { createPlayer } from "./createPlayer";
 import { JoinSuccessView } from "./SuccessView";
+import { ScreenLoading } from "@/components/loading/ScreenLoading";
 
 export const QuizContent: React.FC<{ quiz: QuizType }> = ({ quiz }) => {
   const { player, error, loading } = useAuthPlayer(quiz);
@@ -32,28 +33,33 @@ export const QuizContent: React.FC<{ quiz: QuizType }> = ({ quiz }) => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <ScreenLoading />;
   }
 
   if (error) {
     return <div>エラーが発生しました</div>;
   }
 
-  return updatePlayer ? (
-    <JoinSuccessView player={updatePlayer} />
-  ) : (
-    <main className="min-h-screen p-8 pb-20 flex flex-col items-center">
-      <div className="p-1">
-        <h1 className="text-4xl font-bold tracking-wider text-neutral-700 text-center">
-          {quiz.title}
-        </h1>
-        <p className="text-neutral-800 whitespace-pre-line mt-12">
-          {quiz.description}
-        </p>
-      </div>
-      <div className="grow flex justify-center items-center">
-        <ButtonArea player={player} join={join} updating={updating} />
-      </div>
-    </main>
+  return (
+    <>
+      {updating && <ScreenLoading />}
+      {updatePlayer ? (
+        <JoinSuccessView player={updatePlayer} />
+      ) : (
+        <>
+          <div className="p-1">
+            <h1 className="text-4xl font-bold tracking-wider text-neutral-700 text-center">
+              {quiz.title}
+            </h1>
+            <p className="text-neutral-800 whitespace-pre-line mt-12">
+              {quiz.description}
+            </p>
+          </div>
+          <div className="grow flex justify-center items-center">
+            <ButtonArea player={player} join={join} updating={updating} />
+          </div>
+        </>
+      )}
+    </>
   );
 };
