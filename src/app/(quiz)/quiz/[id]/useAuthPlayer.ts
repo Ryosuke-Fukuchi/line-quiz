@@ -5,11 +5,12 @@ import { getPlayer } from "@/requests/client/player";
 import { setCookies } from "@/utils/setCookies";
 import { QuizType } from "@/types/quizTypes";
 import { LiffMockPlugin } from "@line/liff-mock";
+import { useGlobalError } from "@/hooks/useGlobalError";
 
 export function useAuthPlayer(quiz: QuizType) {
-  const [error, setError] = useState(false); // TODO: エラーの種別を追加
   const [player, setPlayer] = useState<PlayerType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const { error, setError } = useGlobalError();
 
   // LIFFの初期化
   const liffInit = async () => {
@@ -33,8 +34,8 @@ export function useAuthPlayer(quiz: QuizType) {
       () => {
         if (!liff.isInClient() && !liff.isLoggedIn) liff.login();
       },
-      () => {
-        setError(true); // エラー時にエラーメッセージをセット
+      (e) => {
+        setError(e); // エラー時にエラーメッセージをセット
       }
     );
   };
@@ -43,9 +44,13 @@ export function useAuthPlayer(quiz: QuizType) {
   const setTokenCookie = async () => {
     if (error) return;
 
-    const liffToken = liff.getIDToken();
-    if (liffToken) {
-      await setCookies({ liffToken });
+    try {
+      const liffToken = liff.getIDToken();
+      if (liffToken) {
+        await setCookies({ liffToken });
+      }
+    } catch {
+      setError(new Error("Error at setTokenCookie"));
     }
   };
 
@@ -55,7 +60,10 @@ export function useAuthPlayer(quiz: QuizType) {
 
     const { player, success } = await getPlayer(quiz.id);
     setPlayer(player);
-    setError(!success);
+
+    if (!success) {
+      setError(new Error("Error at searchPlayer"));
+    }
   };
 
   const initialization = async () => {
@@ -72,5 +80,5 @@ export function useAuthPlayer(quiz: QuizType) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return { player, loading, error };
+  return { player, loading };
 }

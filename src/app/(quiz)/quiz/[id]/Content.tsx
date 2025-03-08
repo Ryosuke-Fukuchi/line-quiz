@@ -8,11 +8,13 @@ import { PlayerType } from "@/types/playerTypes";
 import { createPlayer } from "./createPlayer";
 import { JoinSuccessView } from "./SuccessView";
 import { ScreenLoading } from "@/components/loading/ScreenLoading";
+import { useGlobalError } from "@/hooks/useGlobalError";
 
 export const QuizContent: React.FC<{ quiz: QuizType }> = ({ quiz }) => {
-  const { player, error, loading } = useAuthPlayer(quiz);
+  const { player, loading } = useAuthPlayer(quiz);
   const [updatePlayer, setUpdatePlayer] = useState<PlayerType | null>(null);
   const [updating, setUpdating] = useState(false);
+  const { setError } = useGlobalError();
 
   // playerの作成
   const join = async () => {
@@ -22,22 +24,24 @@ export const QuizContent: React.FC<{ quiz: QuizType }> = ({ quiz }) => {
       (q) => q.question_number === 1
     )?.public_id as string;
 
-    const updatedPlayer = await createPlayer({
-      quiz_id: quiz.id,
-      next_question_id: nextQuestionId,
-    });
+    try {
+      const updatedPlayer = await createPlayer({
+        quiz_id: quiz.id,
+        next_question_id: nextQuestionId,
+      });
 
-    setUpdatePlayer(updatedPlayer); // 更新後のplayerをセット
+      setUpdatePlayer(updatedPlayer); // 更新後のplayerをセット
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
+      setError(e);
+    }
 
     setUpdating(false);
   };
 
   if (loading) {
     return <ScreenLoading />;
-  }
-
-  if (error) {
-    return <div>エラーが発生しました</div>;
   }
 
   return (

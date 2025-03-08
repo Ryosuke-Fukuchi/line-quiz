@@ -1,6 +1,7 @@
 "use server";
 
 import { PlayerType } from "@/types/playerTypes";
+import CustomError from "@/utils/CustomError";
 import { supabase } from "@/utils/supabase";
 import { verifyLineUser } from "@/utils/verifyLineUser";
 import { cookies } from "next/headers";
@@ -23,9 +24,15 @@ export async function createPlayer(payload: {
       `
     );
 
-  if (error || !data || !data[0]) {
-    console.error("An error occured:", error);
-    throw new Error("Internal Server Error");
+  if (error) {
+    throw error;
+  }
+
+  if (!data || !data[0]) {
+    throw new CustomError({
+      message: "Something went wrong on supabae when creating player",
+      statusCode: 500,
+    });
   }
 
   return data[0] as PlayerType;
@@ -34,19 +41,28 @@ export async function createPlayer(payload: {
 async function validateUser() {
   const cookieStore = await cookies();
   const token = cookieStore.get("liffToken");
+
   if (!token) {
-    // TODO: 401 Unauthorized
-    throw new Error("User is not authenticated.");
+    throw new CustomError({
+      message: "Token is not found",
+      statusCode: 401,
+    });
   }
+
   const verifyResponse = await verifyLineUser(token.value);
 
   if (!verifyResponse.ok) {
     if (verifyResponse.status === 401) {
-      // TODO: 401 Unauthorized
-      throw new Error("User is not authenticated.");
-    } else {
-      throw new Error("Validate User Failed. Something went wrong.");
+      throw new CustomError({
+        message: "User is not authenticated",
+        statusCode: 401,
+      });
     }
+
+    throw new CustomError({
+      message: "Something went wrong on verifying user",
+      statusCode: 500,
+    });
   }
 
   const userData = await verifyResponse.json();
