@@ -3,7 +3,7 @@ import { PlayerType } from "@/types/playerTypes";
 import { supabase } from "@/utils/supabase";
 import { cookies } from "next/headers";
 import { verifyLineUser } from "@/utils/verifyLineUser";
-import { PLAYER_STATUS } from "@/const.ts/player";
+import { PLAYER_STATUS } from "@/const/player";
 import { notFound } from "next/navigation";
 
 export async function getPlayer(publicId: string): Promise<PlayerType> {

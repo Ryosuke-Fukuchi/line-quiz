@@ -1,6 +1,6 @@
 "use server";
 
-import { PLAYER_STATUS } from "@/const.ts/player";
+import { PLAYER_STATUS } from "@/const/player";
 import {
   PlayerAnswerPayloadType,
   PlayerAnswerType,

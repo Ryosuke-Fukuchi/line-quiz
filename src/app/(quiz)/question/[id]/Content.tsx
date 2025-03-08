@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { QuestionSelectContent } from "./QuestionSelectContent";
 import { QuestionSortContent } from "./QuestionSortContent";
-import { QUESTION_TYPE } from "@/const.ts/question";
+import { QUESTION_TYPE } from "@/const/question";
 import {
   QuestionSelectType,
   QuestionSortType,
@@ -11,7 +11,7 @@ import {
 } from "@/types/questionTypes";
 import { answer } from "@/requests/client/answer";
 import { PlayerAnswerPayloadType } from "@/types/playerTypes";
-import { PLAYER_STATUS } from "@/const.ts/player";
+import { PLAYER_STATUS } from "@/const/player";
 import { AnswerSuccessView } from "./SuccessView";
 import { AnswerFailView } from "./FailView";
 import { motion, AnimatePresence } from "framer-motion";
