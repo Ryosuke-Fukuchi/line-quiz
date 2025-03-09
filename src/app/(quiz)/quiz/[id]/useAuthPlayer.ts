@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import liff from "@line/liff";
 import { PlayerType } from "@/types/playerTypes";
-import { getPlayer } from "@/requests/client/player";
 import { setCookies } from "@/utils/setCookies";
 import { QuizType } from "@/types/quizTypes";
 import { LiffMockPlugin } from "@line/liff-mock";
 import { useGlobalError } from "@/hooks/useGlobalError";
+import { getPlayer } from "./getPlayer";
 
 export function useAuthPlayer(quiz: QuizType) {
   const [player, setPlayer] = useState<PlayerType | null>(null);
@@ -58,11 +58,13 @@ export function useAuthPlayer(quiz: QuizType) {
   const searchPlayer = async () => {
     if (error) return;
 
-    const { player, success } = await getPlayer(quiz.id);
-    setPlayer(player);
+    try {
+      const player = await getPlayer(quiz.id);
+      setPlayer(player);
 
-    if (!success) {
-      setError(new Error("Error at searchPlayer"));
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
+      setError(e);
     }
   };
 
