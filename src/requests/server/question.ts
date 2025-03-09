@@ -1,10 +1,17 @@
 import "server-only";
+
 import { supabase } from "@/utils/supabase";
 import { QuestionType } from "@/types/questionTypes";
+import { isUUIDv4 } from "@/utils/isUUIDv4";
+import { notFound } from "next/navigation";
 
 export async function getQuestion(
   questionPublicId: string
-): Promise<QuestionType | null> {
+): Promise<QuestionType> {
+  if (!isUUIDv4(questionPublicId)) {
+    notFound();
+  }
+
   const { data, error } = await supabase
     .from("Question")
     .select(
@@ -48,8 +55,13 @@ export async function getQuestion(
     )
     .eq("public_id", questionPublicId);
 
-  if (error || !data || data.length === 0) {
-    return null; // 非正規のアクセスの場合はthrow errorではなくnullを返す
+  if (error) {
+    // パラメータがuuidであることを担保されたうえでエラーが起きたらthrow
+    throw error;
+  }
+
+  if (!data || data.length === 0) {
+    notFound();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
