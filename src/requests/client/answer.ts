@@ -7,10 +7,10 @@ import {
   PlayerType,
 } from "@/types/playerTypes";
 import { QuestionType } from "@/types/questionTypes";
+import CustomError from "@/utils/CustomError";
 import { supabase } from "@/utils/supabase";
 import { verifyLineUser } from "@/utils/verifyLineUser";
 import { cookies } from "next/headers";
-import { notFound } from "next/navigation";
 
 // 回答の処理
 export async function answer({
@@ -26,6 +26,14 @@ export async function answer({
   // playerの検索
   const player = await fetchPlayer(question.quiz.id, userId);
 
+  if (!player) {
+    // playerが存在しない場合は回答の権限がない、という解釈で403を返す
+    throw new CustomError({
+      message: "Player not found",
+      statusCode: 403,
+    });
+  }
+
   // question_numberのバリデーション
   if (player.status === PLAYER_STATUS.done) {
     return {
@@ -39,6 +47,7 @@ export async function answer({
       message: "回答済みの問題です",
     };
   }
+
   if (player.question_number !== question.question_number) {
     return {
       success: false,
@@ -83,23 +92,32 @@ export async function answer({
 async function validateUser() {
   const cookieStore = await cookies();
   const token = cookieStore.get("liffToken");
+
   if (!token) {
-    // TODO: 401 Unauthorized
-    throw new Error("User is not authenticated.");
+    throw new CustomError({
+      message: "Token is not found",
+      statusCode: 401,
+    });
   }
+
   const verifyResponse = await verifyLineUser(token.value);
 
   if (!verifyResponse.ok) {
     if (verifyResponse.status === 401) {
-      // TODO: 401 Unauthorized
-      throw new Error("User is not authenticated.");
-    } else {
-      throw new Error("Validate User Failed. Something went wrong.");
+      throw new CustomError({
+        message: "User is not authenticated",
+        statusCode: 401,
+      });
     }
+
+    throw new CustomError({
+      message: "Something went wrong on verifying user",
+      statusCode: 500,
+    });
   }
 
   const userData = await verifyResponse.json();
-  return { userId: userData.sub }; // LINEユーザーID
+  return { userId: userData.sub, name: userData.name }; // LINEユーザーID
 }
 
 async function fetchPlayer(quizId: number, userId: string) {
@@ -109,8 +127,12 @@ async function fetchPlayer(quizId: number, userId: string) {
     .eq("quiz_id", quizId)
     .eq("user_id", userId);
 
-  if (!data || !data[0] || error) {
-    notFound();
+  if (error) {
+    throw error;
+  }
+
+  if (!data || !data[0]) {
+    return null;
   }
 
   return data[0] as Omit<PlayerType, "playeranswer_set">;
@@ -152,9 +174,15 @@ async function updatePlayer({
     .eq("id", player.id)
     .select("*");
 
-  if (error || !data || !data[0]) {
-    console.error("Error occurred:", error);
-    throw new Error("Update Player Failed. Something went wrong.");
+  if (error) {
+    throw error;
+  }
+
+  if (!data || !data[0]) {
+    throw new CustomError({
+      message: "Something went wrong when updating player",
+      statusCode: 500,
+    });
   }
 
   return data[0] as Omit<PlayerType, "playeranswer_set">;
@@ -166,7 +194,6 @@ async function createPlayerAnswer(playeranswer: Omit<PlayerAnswerType, "id">) {
     .insert({ ...playeranswer });
 
   if (error) {
-    console.error("Error occurred:", error);
-    throw new Error("Create PlayerAnswer Failed. Something went wrong.");
+    throw error;
   }
 }

@@ -10,6 +10,7 @@ import { AnswerFailView } from "./FailView";
 import { AnimatePresence } from "framer-motion";
 import { ScreenLoading } from "@/components/loading/ScreenLoading";
 import { QuestionPresenter } from "./Presenter";
+import { useGlobalError } from "@/hooks/useGlobalError";
 
 export const QuestionMainContainer: React.FC<{
   question: QuestionType;
@@ -30,31 +31,38 @@ export const QuestionMainContainer: React.FC<{
     allAnswered: boolean;
   } | null>(null);
 
+  const { setError: setGlobalError } = useGlobalError();
+
   const [loading, setLoading] = useState(false);
 
   const createAnswer = async (playeranswer: PlayerAnswerPayloadType) => {
     setLoading(true);
-    const { success, player, message } = await answer({
-      question,
-      playeranswer,
-    });
+    try {
+      const { success, player, message } = await answer({
+        question,
+        playeranswer,
+      });
 
-    if (success) {
-      setAnswerState({
-        playerPublicId: player.public_id,
-        questionNumber: player.question_number,
-        nextQuestionPublicId: player.next_question_id,
-        answerContent: playeranswer.content,
-        allAnswered: player.status === PLAYER_STATUS.done,
-      });
-    } else {
-      setErrorState({
-        playerPublicId: player.public_id,
-        questionNumber: player.question_number,
-        nextQuestionPublicId: player.next_question_id,
-        allAnswered: player.status === PLAYER_STATUS.done,
-        message,
-      });
+      if (success) {
+        setAnswerState({
+          playerPublicId: player.public_id,
+          questionNumber: player.question_number,
+          nextQuestionPublicId: player.next_question_id,
+          answerContent: playeranswer.content,
+          allAnswered: player.status === PLAYER_STATUS.done,
+        });
+      } else {
+        setErrorState({
+          playerPublicId: player.public_id,
+          questionNumber: player.question_number,
+          nextQuestionPublicId: player.next_question_id,
+          allAnswered: player.status === PLAYER_STATUS.done,
+          message,
+        });
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
+      setGlobalError(e);
     }
     setLoading(false);
   };
