@@ -1,4 +1,4 @@
-import { QuestionMainContent } from "./Content";
+import { QuestionMainContainer } from "./Container";
 import { getQuestion } from "@/requests/server/question";
 
 export default async function QuestionPage({
@@ -11,7 +11,7 @@ export default async function QuestionPage({
 
   return (
     <main className="relative overflow-hidden">
-      <QuestionMainContent question={question} />
+      <QuestionMainContainer question={question} />
     </main>
   );
 }
