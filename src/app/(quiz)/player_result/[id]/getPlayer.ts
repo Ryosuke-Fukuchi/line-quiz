@@ -2,12 +2,11 @@ import "server-only";
 
 import { PlayerType } from "@/types/playerTypes";
 import { supabase } from "@/utils/supabase";
-import { cookies } from "next/headers";
-import { verifyLineUser } from "@/utils/verifyLineUser";
 import { PLAYER_STATUS } from "@/const/player";
 import { notFound } from "next/navigation";
 import CustomError from "@/utils/CustomError";
 import { isUUIDv4 } from "@/utils/isUUIDv4";
+import { validateUser } from "@/utils/validateUser";
 
 export async function getPlayer(publicId: string): Promise<PlayerType> {
   if (!isUUIDv4(publicId)) {
@@ -46,35 +45,4 @@ export async function getPlayer(publicId: string): Promise<PlayerType> {
   }
 
   return data[0];
-}
-
-async function validateUser() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("liffToken");
-
-  if (!token) {
-    throw new CustomError({
-      message: "Token is not found",
-      statusCode: 401,
-    });
-  }
-
-  const verifyResponse = await verifyLineUser(token.value);
-
-  if (!verifyResponse.ok) {
-    if (verifyResponse.status === 401) {
-      throw new CustomError({
-        message: "User is not authenticated",
-        statusCode: 401,
-      });
-    }
-
-    throw new CustomError({
-      message: "Something went wrong on verifying user",
-      statusCode: 500,
-    });
-  }
-
-  const userData = await verifyResponse.json();
-  return { userId: userData.sub, name: userData.name }; // LINEユーザーID
 }

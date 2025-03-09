@@ -9,8 +9,7 @@ import {
 import { QuestionType } from "@/types/questionTypes";
 import CustomError from "@/utils/CustomError";
 import { supabase } from "@/utils/supabase";
-import { verifyLineUser } from "@/utils/verifyLineUser";
-import { cookies } from "next/headers";
+import { validateUser } from "@/utils/validateUser";
 
 // 回答の処理
 export async function answer({
@@ -87,37 +86,6 @@ export async function answer({
     },
     message: "",
   };
-}
-
-async function validateUser() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("liffToken");
-
-  if (!token) {
-    throw new CustomError({
-      message: "Token is not found",
-      statusCode: 401,
-    });
-  }
-
-  const verifyResponse = await verifyLineUser(token.value);
-
-  if (!verifyResponse.ok) {
-    if (verifyResponse.status === 401) {
-      throw new CustomError({
-        message: "User is not authenticated",
-        statusCode: 401,
-      });
-    }
-
-    throw new CustomError({
-      message: "Something went wrong on verifying user",
-      statusCode: 500,
-    });
-  }
-
-  const userData = await verifyResponse.json();
-  return { userId: userData.sub, name: userData.name }; // LINEユーザーID
 }
 
 async function fetchPlayer(quizId: number, userId: string) {
