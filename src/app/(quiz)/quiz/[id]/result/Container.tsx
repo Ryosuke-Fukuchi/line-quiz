@@ -1,20 +1,12 @@
-import { getQuizPlayers } from "@/requests/server/player";
-import { getQuizByPublicId } from "@/requests/server/quiz";
-import clsx from "clsx";
+import { PlayerType } from "@/types/playerTypes";
+import { QuizType } from "@/types/quizTypes";
+import { cn } from "@/utils/cn";
 import { LuCrown } from "react-icons/lu";
 
-export default async function AdminResultPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id: quizPublicId } = await params;
-  const quiz = await getQuizByPublicId(quizPublicId);
-  const players = await getQuizPlayers(quiz.id);
-
-  const sortedPlayers = players.sort(
-    (a, b) => b.earned_points - a.earned_points
-  );
+export const AdminResultContainer: React.FC<{
+  quiz: QuizType;
+  sortedPlayers: PlayerType[];
+}> = ({ quiz, sortedPlayers }) => {
   return (
     <main className="min-h-screen p-8 pb-20">
       <div className="p-1">
@@ -27,7 +19,9 @@ export default async function AdminResultPage({
       </div>
       <p className="tracking-wider text-neutral-700 text-center mt-6">
         参加者数
-        <span className="px-2 font-semibold text-xl">{players.length}</span>
+        <span className="px-2 font-semibold text-xl">
+          {sortedPlayers.length}
+        </span>
       </p>
       <div className="flex justify-center mt-6">
         <ul>
@@ -39,7 +33,7 @@ export default async function AdminResultPage({
               <p className="text-2xl pb-4">{player.name}</p>
               <p className="text-center px-10 relative">
                 <span
-                  className={`font-semibold ${clsx("text-5xl", {
+                  className={`font-semibold ${cn("text-5xl", {
                     "text-8xl text-emerald-600": i < 3,
                     "text-7xl text-teal-700": i < 8 && i >= 3,
                   })}`}
@@ -55,4 +49,4 @@ export default async function AdminResultPage({
       </div>
     </main>
   );
-}
+};
