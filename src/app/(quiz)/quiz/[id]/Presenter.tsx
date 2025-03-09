@@ -5,18 +5,41 @@ import { PLAYER_STATUS } from "@/const/player";
 import { PlayerType } from "@/types/playerTypes";
 import Link from "next/link";
 import { cn } from "@/utils/cn";
-
-const buttonStyle =
-  "border-2 border-emerald-700 text-white rounded-md bg-emerald-700 hover:border-emerald-700 hover:bg-white hover:text-emerald-700 font-semibold text-xl tracking-wide shadow-md shadow-emerald-900/40 active:shadow-none py-2 px-6";
+import { QuizType } from "@/types/quizTypes";
 
 type PropsType = {
+  quiz: QuizType;
   player: PlayerType | null;
   join: () => Promise<void>;
   updating: boolean;
 };
 
-// クイズ開始ボタン
-export const ButtonArea: React.FC<PropsType> = ({ player, join, updating }) => {
+export const QuizPresenter: React.FC<PropsType> = ({ quiz, ...props }) => {
+  return (
+    <>
+      <div className="p-1">
+        <h1 className="text-4xl font-bold tracking-wider text-neutral-700 text-center">
+          {quiz.title}
+        </h1>
+        <p className="text-neutral-800 whitespace-pre-line mt-12">
+          {quiz.description}
+        </p>
+      </div>
+      <div className="grow flex justify-center items-center">
+        <ButtonArea {...props} />
+      </div>
+    </>
+  );
+};
+
+const buttonStyle =
+  "border-2 border-emerald-700 text-white rounded-md bg-emerald-700 hover:border-emerald-700 hover:bg-white hover:text-emerald-700 font-semibold text-xl tracking-wide shadow-md shadow-emerald-900/40 active:shadow-none py-2 px-6";
+
+const ButtonArea: React.FC<Omit<PropsType, "quiz">> = ({
+  player,
+  join,
+  updating,
+}) => {
   // クイズ未参加の場合
   if (!player) {
     return (

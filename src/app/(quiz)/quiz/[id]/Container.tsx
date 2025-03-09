@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ButtonArea } from "./ButtonArea";
+import { QuizPresenter } from "./Presenter";
 import { useAuthPlayer } from "./useAuthPlayer";
 import { QuizType } from "@/types/quizTypes";
 import { PlayerType } from "@/types/playerTypes";
@@ -10,7 +10,7 @@ import { JoinSuccessView } from "./SuccessView";
 import { ScreenLoading } from "@/components/loading/ScreenLoading";
 import { useGlobalError } from "@/hooks/useGlobalError";
 
-export const QuizContent: React.FC<{ quiz: QuizType }> = ({ quiz }) => {
+export const QuizContainer: React.FC<{ quiz: QuizType }> = ({ quiz }) => {
   const { player, loading } = useAuthPlayer(quiz);
   const [updatePlayer, setUpdatePlayer] = useState<PlayerType | null>(null);
   const [updating, setUpdating] = useState(false);
@@ -50,19 +50,12 @@ export const QuizContent: React.FC<{ quiz: QuizType }> = ({ quiz }) => {
       {updatePlayer ? (
         <JoinSuccessView player={updatePlayer} />
       ) : (
-        <>
-          <div className="p-1">
-            <h1 className="text-4xl font-bold tracking-wider text-neutral-700 text-center">
-              {quiz.title}
-            </h1>
-            <p className="text-neutral-800 whitespace-pre-line mt-12">
-              {quiz.description}
-            </p>
-          </div>
-          <div className="grow flex justify-center items-center">
-            <ButtonArea player={player} join={join} updating={updating} />
-          </div>
-        </>
+        <QuizPresenter
+          quiz={quiz}
+          player={player}
+          join={join}
+          updating={updating}
+        />
       )}
     </>
   );
