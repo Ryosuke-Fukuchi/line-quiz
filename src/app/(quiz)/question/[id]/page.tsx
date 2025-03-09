@@ -1,5 +1,5 @@
 import { QuestionMainContainer } from "./Container";
-import { getQuestion } from "./getQuestion";
+import { getQuestion } from "./f_handlers/getQuestion";
 
 export default async function QuestionPage({
   params,

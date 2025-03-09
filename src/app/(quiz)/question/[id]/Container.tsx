@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { QuestionType } from "@/types/questionTypes";
-import { answer } from "@/requests/client/answer";
+import { answer } from "@/app/(quiz)/question/[id]/f_handlers/answer";
 import { PlayerAnswerPayloadType } from "@/types/playerTypes";
 import { PLAYER_STATUS } from "@/const/player";
 import { AnswerSuccessView } from "./SuccessView";
