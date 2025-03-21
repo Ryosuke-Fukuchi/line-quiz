@@ -1,8 +1,7 @@
-import { QuestionContent } from "./QuestionContent";
-import { getQuestion } from "@/requests/server/question";
-import { notFound } from "next/navigation";
+import { QuestionMainContainer } from "./Container";
+import { getQuestion } from "./f_handlers/getQuestion";
 
-export default async function QuestionContentPage({
+export default async function QuestionPage({
   params,
 }: {
   params: Promise<{ id: string }>;
@@ -10,18 +9,9 @@ export default async function QuestionContentPage({
   const { id: questionPublicId } = await params;
   const question = await getQuestion(questionPublicId);
 
-  if (!question) {
-    notFound();
-  }
-
   return (
-    <main className="min-h-screen px-8 py-4 pb-20 flex flex-col">
-      <div className="p-1">
-        <h3 className="text-lg font-semibold text-neutral-700 text-center">
-          第{question.question_number}問!
-        </h3>
-      </div>
-      <QuestionContent question={question} />
+    <main className="relative overflow-hidden">
+      <QuestionMainContainer question={question} />
     </main>
   );
 }

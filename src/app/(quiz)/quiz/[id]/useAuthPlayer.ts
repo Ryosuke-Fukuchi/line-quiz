@@ -1,57 +1,86 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import liff from "@line/liff";
 import { PlayerType } from "@/types/playerTypes";
-import { getPlayer } from "@/requests/client/player";
 import { setCookies } from "@/utils/setCookies";
 import { QuizType } from "@/types/quizTypes";
+import { LiffMockPlugin } from "@line/liff-mock";
+import { useGlobalError } from "@/hooks/useGlobalError";
+import { getPlayer } from "./getPlayer";
 
 export function useAuthPlayer(quiz: QuizType) {
-  const [error, setError] = useState(false); // TODO: エラーの種別を追加
   const [player, setPlayer] = useState<PlayerType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const { error, setError } = useGlobalError();
 
   // LIFFの初期化
-  const liffInit = useCallback(async () => {
+  const liffInit = async () => {
+    if (process.env.NEXT_PUBLIC_LIFF_MOCK_MODE === "true") {
+      // モックモードの設定
+      liff.use(new LiffMockPlugin());
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (liff as any).$mock.set((p: any) => ({
+        ...p,
+        getProfile: { displayName: "テスト太郎", userId: "xxxxxxxxx" },
+        getIDToken: "token-xyz",
+      }));
+    }
+
     await liff.init(
-      { liffId: process.env.NEXT_PUBLIC_LIFF_ID || "" },
-      () => {},
+      {
+        liffId: process.env.NEXT_PUBLIC_LIFF_ID || "",
+        mock: process.env.NEXT_PUBLIC_LIFF_MOCK_MODE === "true",
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any,
       () => {
-        setError(true); // エラー時にエラーメッセージをセット
+        if (!liff.isInClient() && !liff.isLoggedIn) liff.login();
+      },
+      (e) => {
+        setError(e); // エラー時にエラーメッセージをセット
       }
     );
-  }, []);
+  };
 
   // IDトークンをCookieにセット
-  const setTokenCookie = useCallback(async () => {
+  const setTokenCookie = async () => {
     if (error) return;
 
-    const liffToken = liff.getIDToken();
-    if (liffToken) {
-      await setCookies({ liffToken });
+    try {
+      const liffToken = liff.getIDToken();
+      if (liffToken) {
+        await setCookies({ liffToken });
+      }
+    } catch {
+      setError(new Error("Error at setTokenCookie"));
     }
-  }, [error]);
+  };
 
   // プレイヤーの検索
-  const searchPlayer = useCallback(async () => {
+  const searchPlayer = async () => {
     if (error) return;
 
-    const { player, success } = await getPlayer(quiz.id);
-    setPlayer(player);
-    setError(!success);
-  }, [error, quiz]);
+    try {
+      const player = await getPlayer(quiz.id);
+      setPlayer(player);
 
-  const initialization = useCallback(async () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
+      setError(e);
+    }
+  };
+
+  const initialization = async () => {
     setLoading(true);
     await liffInit();
     await setTokenCookie();
     await searchPlayer();
     setLoading(false);
-  }, [liffInit, setTokenCookie, searchPlayer]);
+  };
 
   // 初回処理
   useEffect(() => {
     initialization();
-  }, [initialization]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  return { player, loading, error };
+  return { player, loading };
 }
